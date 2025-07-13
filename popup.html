@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HKExpress develop tool - Chrome扩展</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hidden {
+            display: none;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        html, body {
+            background-color: transparent !important;
+        }
+
+        body {
+            width: 450px;
+            border: none !important;
+            box-shadow: none !important;
+            color: rgba(255, 255, 255, 0);
+            font-size: 14px;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .popup-container {
+            position: relative;
+            overflow: hidden;
+            background: white;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+        }
+
+        .github-svc-div {
+            margin: auto;
+        }
+
+        .github-svc-name {
+            padding: 3px;
+            padding-left: 20px;
+            color: white;
+            background: #702b91;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 15px;
+            width: 387px;
+        }
+
+        .popup-header {
+            background: #702b91;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        .popup-header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            flex-grow: 1;
+        }
+
+        .search-box {
+            position: relative;
+            margin: 10px 20px 10px 20px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f1f5f9;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: #334155;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            background: white;
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+        }
+
+        .sites-container {
+            overflow-y: auto;
+            padding: 10px 15px 15px;
+            max-width: 500px;
+            margin: 5px;
+            display: flex;
+            flex-wrap: wrap;
+
+        }
+
+        .layout-table {
+            max-width: 500px;
+            margin: 5px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .layout-grid {
+            display: table;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 7px;
+        }
+
+        .site-container {
+            display: table-cell;
+            padding: 7px;
+            align-items: center;
+            background: white;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .site-row {
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .site-row:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+            border-color: #818cf8;
+        }
+
+        .site-name {
+            width: 120px;
+            padding: 15px;
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-right: 1px solid #e2e8f0;
+        }
+
+        .site-button {
+            width: 120px;
+            padding: 15px;
+            cursor: pointer;
+            background: #f1f5f9;
+            transition: all 0.2s;
+            font-weight: 600;
+            color: #334155;
+            display: flex;
+            align-items: end;
+            gap: 5px;
+            border-color: transparent;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            outline: none;
+        }
+
+        .site-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 7px rgba(0, 0, 0, 0.4);
+        }
+
+        .site-button:active {
+            transform: translateY(1px) !important;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3),
+            inset 0 2px 5px rgba(0, 0, 0, 0.4);
+            animation: bounce 0.6s ease;
+            outline: none
+        }
+
+        .img {
+            width: 1.5em;
+            height: 1.5em;
+        }
+
+        .site-name i {
+            color: #4f46e5;
+            font-size: 16px;
+        }
+
+        .param-input {
+            flex: 1;
+            padding: 0 15px;
+        }
+
+        .param-input input {
+            width: 100%;
+            padding: 12px 0;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: #334155;
+        }
+
+        .param-input input:focus {
+            outline: none;
+        }
+
+        .param-input input::placeholder {
+            color: #94a3b8;
+        }
+
+        .open-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 0 15px;
+            height: 100%;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 60px;
+        }
+
+        .open-btn:hover {
+            background: #4338ca;
+        }
+
+        .open-btn i {
+            margin-right: 5px;
+        }
+
+        .footer {
+            padding: 5px;
+            background: #f1f5f9;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        /* 滚动条样式 */
+        .sites-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sites-container::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .sites-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .sites-container::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .notification {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: #10b981;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transform: translateX(120%);
+            transition: transform 0.3s ease-out;
+            z-index: 2000;
+            font-size: 13px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            background: #ef4444;
+        }
+
+        /* 环境切换器样式 */
+        .env-switcher {
+            position: relative;
+            display: inline-block;
+        }
+
+        .env-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .env-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .env-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            min-width: 105px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+            z-index: 100;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .env-dropdown a {
+            display: block;
+            padding: 10px 5px;
+            color: #334155;
+            text-decoration: none;
+            font-size: 13px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .env-dropdown a:hover {
+            background: #f1f5f9;
+        }
+
+        .env-dropdown.show {
+            display: block;
+        }
+
+        /* 环境指示器 */
+        .env-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .prod {
+            background-color: #10b981;
+        }
+
+        .uat {
+            background-color: #face01;
+        }
+
+        .dev {
+            background-color: #e20e5f;
+        }
+
+        /* 环境标签 */
+        .env-tag {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 8px;
+            text-transform: uppercase;
+        }
+
+        .prod-tag {
+            background: #10b981;
+            color: white;
+        }
+
+        .uat-tag {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .dev-tag {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* 分页标签 */
+        .category-tabs {
+            display: flex;
+            padding: 0 15px;
+            margin: 10px;
+            gap: 5px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: #f1f5f9;
+            border: none;
+            padding: 8px 10px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .tab-btn.active {
+            background: #702b91;
+            color: white;
+        }
+
+        .tab-btn i {
+            font-size: 14px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+
+        .empty-state i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #cbd5e1;
+        }
+
+        .hkeIcon {
+            width: 40%;
+            height: 40%;
+        }
+
+        .powered-by {
+            margin-top: 5px;
+            font-size: 10px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+<div class="popup-container">
+    <!-- 弹出窗口头部 -->
+    <div class="popup-header">
+
+        <img width="20%" height="20%" src="
+https://www.hkexpress.com/_next/image?url=https%3A%2F%2Fedge.sitecorecloud.io%2Fa176b33fb1db-testingf895-hkeproducti37b0-1e24%2Fmedia%2FDesign-Components%2FHKE-icon%2FHKE---Logo1.svg%3Fh%3D32%26iar%3D0%26w%3D122%26hash%3D20250711T025055&w=750&q=75">
+        <h1></h1>
+
+        <!-- 环境切换器 -->
+        <div class="env-switcher">
+            <button class="env-button" id="envButton">
+                <i class="fas fa-globe"></i>
+                <span id="currentEnv">ENV</span>
+            </button>
+            <div class="env-dropdown" id="envDropdown">
+                <a href="#" data-env="prod">
+                    <i class="fas fa-globe"></i>
+                    PROD
+                </a>
+                <a href="#" data-env="uat">
+                    <i class="fa-solid fa-bug"></i>
+                    UAT
+                </a>
+                <a href="#" data-env="dev">
+                    <i class="fa-solid fa-poo"></i>
+                    DEV
+                </a>
+                <a href="#" data-env="dev">
+                    <i class="fa-solid fa-poo"></i>
+                    NEXT-DEV
+                </a>
+                <a href="#" data-env="dev">
+                    <i class="fa-solid fa-poo"></i>
+                    NEXT-UAT
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分页标签 -->
+    <div class="category-tabs">
+        <button class="tab-btn active" data-category="hkexpress">
+            <i class="fa-solid fa-plane"></i>
+            HKExpress
+        </button>
+        <button class="tab-btn" data-category="opensearch">
+            <i class="fas fa-search"></i>
+            OpenSearch
+        </button>
+        <button class="tab-btn" data-category="server">
+            <i class="fa-solid fa-server"></i>
+            Github
+        </button>
+        <button class="tab-btn" data-category="others">
+            <i class="fa-solid fa-cloud"></i>
+            Cloud
+        </button>
+    </div>
+
+    <!-- 搜索框 -->
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="搜索网站...">
+        <i class="fas fa-search"></i>
+    </div>
+
+    <!-- 网站列表容器 -->
+    <div class="sites-container layout-table" id="sitesContainer">
+        <!-- 网站行将通过JavaScript动态生成 -->
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="footer">
+        HKExpress develop tool v1.0 &copy; 2025 | 当前环境: <span id="footerEnv">生产环境</span>
+        <div class="powered-by">Powered by Heath</div>
+    </div>
+</div>
+
+<!-- 通知 -->
+<div class="notification" id="notification">
+    <i class="fas fa-check-circle"></i>
+    <span id="notificationText">操作成功！</span>
+</div>
+<!-- 外部JS文件 -->
+<script src="popup.js"></script>
+</body>
+</html>
