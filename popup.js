@@ -5,13 +5,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const notification = document.getElementById('notification');
     const notificationText = document.getElementById('notificationText');
     const envButton = document.getElementById('envButton');
+    const timeButton = document.getElementById('timeButton');
     const envDropdown = document.getElementById('envDropdown');
+    const timeDropdown = document.getElementById('timeDropdown');
     const currentEnvSpan = document.getElementById('currentEnv');
+    const currentTimeSpan = document.getElementById('currentTimeSelector');
+    const timeSwitcherContainer = document.getElementById('timeSwitcherContainer');
     const footerEnv = document.getElementById('footerEnv');
     const tabButtons = document.querySelectorAll('.tab-btn');
 
-    // 当前环境（默认生产环境）
+
     let currentEnv = 'dev';
+    let currentTime = 'd1';
     let currentCategory = 'hkexpress';
     let allSites = [];
     let filteredSites = [];
@@ -20,21 +25,29 @@ document.addEventListener('DOMContentLoaded', function () {
     const envNames = {
         prod: 'PROD ENV', uat: 'UAT ENV', dev: 'DEV ENV', nextdev: 'NEXT DEV ENV', nextuat: 'NEXT UAT ENV'
     };
-
-    // 环境标签映射
-    const envTags = {
-        prod: 'PROD', uat: 'UAT', dev: 'DEV', nextdev: 'NEXT DEV', nextuat: 'NEXT UAT'
+    const timeNames = {
+        h1: '1 Hour', d1: '1 Day', w1: '1 Week', m1: '1 Month'
     };
 
-    // 环境颜色类映射
-    const envTagClasses = {
-        prod: 'prod-tag', uat: 'uat-tag', dev: 'dev-tag', nextdev: 'next-dev-tag', nextuat: 'next-uat-tag'
-    };
+    // // 环境标签映射
+    // const envTags = {
+    //     prod: 'PROD', uat: 'UAT', dev: 'DEV', nextdev: 'NEXT DEV', nextuat: 'NEXT UAT'
+    // };
+    //
+    // // 环境颜色类映射
+    // const envTagClasses = {
+    //     prod: 'prod-tag', uat: 'uat-tag', dev: 'dev-tag', nextdev: 'next-dev-tag', nextuat: 'next-uat-tag'
+    // };
 
     // 环境切换器事件
     envButton.addEventListener('click', function (e) {
         e.stopPropagation();
         envDropdown.classList.toggle('show');
+    });
+
+    timeButton.addEventListener('click', function (e) {
+        e.stopPropagation();
+        timeDropdown.classList.toggle('show');
     });
 
     // 点击环境选项
@@ -44,6 +57,15 @@ document.addEventListener('DOMContentLoaded', function () {
             const env = e.target.getAttribute('data-env');
             setEnvironment(env);
             envDropdown.classList.remove('show');
+        }
+    });
+
+    timeDropdown.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (e.target.tagName === 'A') {
+            const time = e.target.getAttribute('data-env');
+            setTimeSelector(time);
+            timeDropdown.classList.remove('show');
         }
     });
 
@@ -63,6 +85,14 @@ document.addEventListener('DOMContentLoaded', function () {
             this.classList.add('active');
             // 更新当前分类
             currentCategory = this.getAttribute('data-category');
+            console.log(timeSwitcherContainer);
+            if (currentCategory === 'opensearch') {
+                timeSwitcherContainer.classList.remove('hidden');
+            } else {
+                timeSwitcherContainer.classList.add('hidden');
+            }
+
+
             // 重新渲染网站列表
             cleanFilter();
             filterSites();
@@ -74,18 +104,87 @@ document.addEventListener('DOMContentLoaded', function () {
         currentEnv = env;
         currentEnvSpan.textContent = envNames[env];
         footerEnv.textContent = envNames[env];
-
+        saveEnvironment(env)
         // 重新渲染网站列表
         filterSites();
     }
 
+    function setTimeSelector(time) {
+        currentTime = time;
+
+        currentTimeSpan.textContent = timeNames[time];
+
+        saveTimeSelector(time)
+        // 重新渲染网站列表
+        filterSites();
+    }
+
+    function saveEnvironment(env) {
+        localStorage.setItem('selectedEnv', env);
+    }
+
+    const opensearch = {
+        baseUrl: {
+            dev: 'https://irp-nonprod-os.hkexpress.com/_dashboards/app/data-explorer/discover#?',
+            uat: 'https://irp-nonprod-os.hkexpress.com/_dashboards/app/data-explorer/discover#?',
+            nextdev: 'https://irp-nonprod-os.hkexpress.com/_dashboards/app/data-explorer/discover#?',
+            nextuat: 'https://irp-nonprod-os.hkexpress.com/_dashboards/app/data-explorer/discover#?',
+            prod: 'https://irp-prod-os.hkexpress.com/_dashboards/app/data-explorer/discover?security_tenant=hke-prod-rosa#?'
+        },
+        filterIndex: '&_q=(filters:!((\'$state\':(store:appState),meta:(alias:!n,disabled:!f,index:\'$1\',',
+        indexParam: 'metadata:(indexPattern:\'$1\',view:discover))',
+        indexPattern: {
+            dev: '71d8fc80-2301-11ef-ae1c-751edb730112',
+            uat: '1ddac3d0-29f4-11ef-8292-e1b84fc6127c',
+            nextdev: 'fb93de40-e377-11ef-9dde-157a1613bce2',
+            nextuat: '064376c0-e378-11ef-8062-87353e736baa',
+            prod: 'f4f12330-b079-11ef-ad74-6d49bebb7247',
+        },
+        timeSelector: {
+            h1: '&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-1h,to:now))',
+            d1: '&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-1d,to:now))',
+            w1: '&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-1w,to:now))',
+            m1: '&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-1M,to:now))',
+        }
+    }
+    const argo = {
+        baseUrl: 'https://openshift-gitops-server-openshift-gitops.apps.hkerosa-nonprod.o5ys.p1.openshiftapps.com/applications/openshift-gitops/',
+        url1: '?view=tree&resource=kind%3ARollout',
+    }
     const githubBaseUrl = {
         baseUrl: 'https://github.com/HKExpressAirwaysLimited/',
         mergerParam: '/compare/release...master',
         releaseParam: '/releases/new',
         apiVersionParam: '/packages/'
     }
+    const redhatBaseUrl = {
+        baseUrl: 'https://console-openshift-console.apps.hkerosa-nonprod.o5ys.p1.openshiftapps.com/k8s/ns/',
+        url1: '/deployments/',
+        url2: '/pods/',
+    }
 
+    function loadEnvironment() {
+        const savedEnv = localStorage.getItem('selectedEnv');
+        if (savedEnv && envNames[savedEnv]) {
+            currentEnv = savedEnv;
+        }
+    }
+
+    function loadTimeSelector() {
+        const savedTimeSelector = localStorage.getItem('selectedTime');
+        if (savedTimeSelector && timeNames[savedTimeSelector]) {
+            currentTime = savedTimeSelector;
+        }
+    }
+
+// 保存环境设置到本地存储
+    function saveEnvironment(env) {
+        localStorage.setItem('selectedEnv', env);
+    }
+
+    function saveTimeSelector(time) {
+        localStorage.setItem('selectedTime', time);
+    }
 
     // 预定义网站配置（支持多环境）
     const sites = [
@@ -97,7 +196,9 @@ document.addEventListener('DOMContentLoaded', function () {
             baseUrl: {
                 prod: 'https://mybooking.hkexpress.com/en',
                 uat: 'https://irp-uat-booking.hkexpress.com/en',
-                dev: 'https://irp-dev-booking.hkexpress.com/en'
+                dev: 'https://irp-dev-booking.hkexpress.com/en',
+                nextdev: 'https://irp-next-dev-booking.hkexpress.com/en',
+                nextuat: 'https://irp-next-uat-booking.hkexpress.com/en'
             },
             order: 1,
             searchAble: false,
@@ -111,7 +212,9 @@ document.addEventListener('DOMContentLoaded', function () {
             baseUrl: {
                 prod: 'https://mybooking.hkexpress.com/en-HK/full-miles-redemption/login',
                 uat: 'https://irp-uat-booking.hkexpress.com/en/full-miles-redemption/login',
-                dev: 'https://irp-dev-booking.hkexpress.com/en/full-miles-redemption/login'
+                dev: 'https://irp-dev-booking.hkexpress.com/en/full-miles-redemption/login',
+                nextdev: 'https://irp-next-dev-booking.hkexpress.com/en/full-miles-redemption/login',
+                nextuat: 'https://irp-next-uat-booking.hkexpress.com/en/full-miles-redemption/login'
             },
             order: 1,
             searchAble: false,
@@ -125,7 +228,9 @@ document.addEventListener('DOMContentLoaded', function () {
             baseUrl: {
                 prod: 'https://admin.hkexpress.com/dashboard',
                 uat: 'https://irp-uat-admin.hkexpress.com/',
-                dev: 'https://irp-dev-admin.hkexpress.com/'
+                dev: 'https://irp-dev-admin.hkexpress.com/',
+                nextdev: 'https://irp-next-dev-admin.hkexpress.com/',
+                nextuat: 'https://irp-next-uat-admin.hkexpress.com/'
             },
             order: 1,
             searchAble: false,
@@ -139,7 +244,9 @@ document.addEventListener('DOMContentLoaded', function () {
             baseUrl: {
                 prod: 'https://mybooking.hkexpress.com/en/b2b/login',
                 uat: 'https://irp-uat-booking.hkexpress.com/en/b2b/login',
-                dev: 'https://irp-dev-booking.hkexpress.com/en/b2b/login'
+                dev: 'https://irp-dev-booking.hkexpress.com/en/b2b/login',
+                nextdev: 'https://irp-next-dev-booking.hkexpress.com/en/b2b/login',
+                nextuat: 'https://irp-next-uat-booking.hkexpress.com/en/b2b/login'
             },
             order: 1,
             searchAble: false,
@@ -148,12 +255,14 @@ document.addEventListener('DOMContentLoaded', function () {
         {
             id: 'sitecore',
             name: 'Sitecore',
-            icon: 'https://mybooking.hkexpress.com/favicon.ico',
+            icon: 'https://www.sitecore.com/static/favicon.ico',
             category: 'hkexpress',
             baseUrl: {
                 prod: 'https://api.hkexpress.com/public/v1/content-management/list?lang=en&application_code=ALL&channel=app',
                 uat: 'https://irp-uat-edge.hkexpress.com/i18n/en/web.json',
-                dev: 'https://irp-dev-edge.hkexpress.com/i18n/en/web.json'
+                dev: 'https://irp-dev-edge.hkexpress.com/i18n/en/web.json',
+                nextdev: 'https://irp-next-dev-edge.hkexpress.com/i18n/en/web.json',
+                nextuat: 'https://irp-next-uat-edge.hkexpress.com/i18n/en/web.json'
             },
             order: 1,
             searchAble: false,
@@ -166,6 +275,13 @@ document.addEventListener('DOMContentLoaded', function () {
             category: 'server',
             repositoryName: 'hkexpress-flt-booking-query-svc',
             packagesId: '2167397',
+            project: {
+                dev: 'ibe-dev',
+                uat: 'ibe-uat',
+                prod: 'ibe-uat',
+                nextdev: 'ibe-next-dev',
+                nextuat: 'ibe-next-uat',
+            },
             order: 1,
             haveApi: true,
             deployable: true,
@@ -178,6 +294,13 @@ document.addEventListener('DOMContentLoaded', function () {
             icon: 'https://github.githubassets.com/favicons/favicon.svg',
             category: 'server',
             repositoryName: 'hkexpress-order-svc',
+            project: {
+                dev: 'ibe-pci-dev',
+                uat: 'ibe-pci-uat',
+                prod: 'ibe-pci-uat',
+                nextdev: 'ibe-pci-next-dev',
+                nextuat: 'ibe-pci-next-uat',
+            },
             order: 1,
             haveApi: true,
             deployable: true,
@@ -191,6 +314,13 @@ document.addEventListener('DOMContentLoaded', function () {
             category: 'server',
             repositoryName: 'hkexpress-flt-booking-mgmt-svc',
             packagesId: '2167465',
+            project: {
+                dev: 'ibe-dev',
+                uat: 'ibe-uat',
+                prod: 'ibe-uat',
+                nextdev: 'ibe-next-dev',
+                nextuat: 'ibe-next-uat',
+            },
             order: 1,
             haveApi: true,
             deployable: true,
@@ -204,6 +334,13 @@ document.addEventListener('DOMContentLoaded', function () {
             category: 'server',
             repositoryName: 'hkexpress-auth-svc',
             packagesId: '2167512',
+            project: {
+                dev: 'ibe-dev',
+                uat: 'ibe-uat',
+                prod: 'ibe-uat',
+                nextdev: 'ibe-next-dev',
+                nextuat: 'ibe-next-uat',
+            },
             order: 1,
             haveApi: true,
             deployable: true,
@@ -217,6 +354,13 @@ document.addEventListener('DOMContentLoaded', function () {
             category: 'server',
             repositoryName: 'hkexpress-notification-svc',
             packagesId: '2164074',
+            project: {
+                dev: 'ibe-dev',
+                uat: 'ibe-uat',
+                prod: 'ibe-uat',
+                nextdev: 'ibe-next-dev',
+                nextuat: 'ibe-next-uat',
+            },
             order: 1,
             haveApi: true,
             deployable: true,
@@ -230,6 +374,13 @@ document.addEventListener('DOMContentLoaded', function () {
             category: 'server',
             repositoryName: 'hkexpress-payment-svc',
             packagesId: '2167420',
+            project: {
+                dev: 'ibe-dev',
+                uat: 'ibe-uat',
+                prod: 'ibe-uat',
+                nextdev: 'ibe-next-dev',
+                nextuat: 'ibe-next-uat',
+            },
             order: 1,
             haveApi: true,
             deployable: true,
@@ -243,6 +394,13 @@ document.addEventListener('DOMContentLoaded', function () {
             category: 'server',
             repositoryName: 'hkexpress-admin-svc',
             packagesId: '2146705',
+            project: {
+                dev: 'ibe-dev',
+                uat: 'ibe-uat',
+                prod: 'ibe-uat',
+                nextdev: 'ibe-next-dev',
+                nextuat: 'ibe-next-uat',
+            },
             order: 1,
             haveApi: true,
             deployable: true,
@@ -256,6 +414,13 @@ document.addEventListener('DOMContentLoaded', function () {
             category: 'server',
             repositoryName: 'hkexpress-member-svc',
             packagesId: '2167453',
+            project: {
+                dev: 'ibe-dev',
+                uat: 'ibe-uat',
+                prod: 'ibe-uat',
+                nextdev: 'ibe-next-dev',
+                nextuat: 'ibe-next-uat',
+            },
             order: 1,
             haveApi: true,
             deployable: true,
@@ -269,6 +434,13 @@ document.addEventListener('DOMContentLoaded', function () {
             category: 'server',
             repositoryName: 'hkexpress-non-pss-int-svc',
             packagesId: '2167571',
+            project: {
+                dev: 'ibe-dev',
+                uat: 'ibe-uat',
+                prod: 'ibe-uat',
+                nextdev: 'ibe-next-dev',
+                nextuat: 'ibe-next-uat',
+            },
             order: 1,
             haveApi: true,
             deployable: true,
@@ -319,6 +491,13 @@ document.addEventListener('DOMContentLoaded', function () {
             icon: 'https://github.githubassets.com/favicons/favicon.svg',
             category: 'server',
             repositoryName: 'hkexpress-frontend-monorepo',
+            project: {
+                dev: 'ibe-dev',
+                uat: 'ibe-uat',
+                prod: 'ibe-uat',
+                nextdev: 'ibe-next-dev',
+                nextuat: 'ibe-next-uat',
+            },
             order: 1,
             haveApi: false,
             deployable: true,
@@ -331,6 +510,13 @@ document.addEventListener('DOMContentLoaded', function () {
             icon: 'https://github.githubassets.com/favicons/favicon.svg',
             category: 'server',
             repositoryName: 'hkexpress-admin-portal',
+            project: {
+                dev: 'ibe-dev',
+                uat: 'ibe-uat',
+                prod: 'ibe-uat',
+                nextdev: 'ibe-next-dev',
+                nextuat: 'ibe-next-uat',
+            },
             order: 1,
             haveApi: false,
             deployable: true,
@@ -430,21 +616,97 @@ document.addEventListener('DOMContentLoaded', function () {
 
         },
         {
-            id: 'jimu',
-            name: 'Jimu',
-            icon: 'https://jimutour.com/favicon.ico',
-            category: 'opensearch',
-            url: 'https://jimutour.com/submitlogin.do',
+            id: 'regextest',
+            name: 'Regex test',
+            icon: 'https://static.jyshare.com/images/c-runoob-logo.ico',
+            category: 'others',
+            url: 'https://www.jyshare.com/front-end/854/',
             order: 1,
             searchAble: false,
+
+        },
+        {
+            id: 'tokendecode',
+            name: 'JTW token',
+            icon: 'https://jwt.io/img/icon.svg\n',
+            category: 'others',
+            url: 'https://jwt.io/',
+            order: 1,
+            searchAble: false,
+
+        },
+
+//         https://irp-nonprod-os.hkexpress.com/_dashboards/app/data-explorer/discover#?
+//     _a=(discover:(columns:!(structured.message,structured.level,structured.request_url,structured.request_body),isDirty:!t,sort:!()),
+//     metadata:(indexPattern:'1ddac3d0-29f4-11ef-8292-e1b84fc6127c',view:discover))
+// &_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-1w,to:now))&_q=(filters:!(),query:(language:kuery,query:''))
+        {
+            id: 'searchbytraceId',
+            name: 'search by trace Id',
+            category: 'opensearch',
+            showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body),isDirty:!t,sort:!()),',
+            queryParam: '&_q=(filters:!(),query:(language:kuery,query:\'$1\'))',
+            order: 1,
+            searchAble: true,
+            usedFilter: false,
+            placeholder: 'please enter trace Id'
+        },
+        {
+            id: 'searchlogbyorderId',
+            name: 'search by orderId',
+            category: 'opensearch',
+            showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body),isDirty:!t,sort:!()),',
+            queryParam: '&_q=(filters:!(),query:(language:kuery,query:\'$1\'))',
+            order: 1,
+            searchAble: true,
+            usedFilter: false,
+            placeholder: 'please enter order Id'
+        },
+        {
+            id: 'searchjimupayment',
+            name: 'search recent jimu api call',
+            category: 'opensearch',
+            order: 1,
+            searchAble: false,
+            usedFilter: true,
+            showColumn: '_a=(discover:(columns:!(structured.message,structured.level,structured.request_url,structured.request_body),isDirty:!t,sort:!()),',
+            queryParam: 'key:structured.request_url,negate:!f,params:(query:\'https:%2F%2Fapistores.jimutour.com%2Fapiworks%2Fpay%2Fscanqrcode%2Fgateway\'),type:phrase),query:(match_phrase:(structured.request_url:\'https:%2F%2Fapistores.jimutour.com%2Fapiworks%2Fpay%2Fscanqrcode%2Fgateway\')))),query:(language:kuery,query:\'\'))',
+            placeholder: '输入搜索关键词'
+        },
+
+        {
+            id: 'searchcreatepaymentapicall',
+            name: 'search recent create payment api call',
+            category: 'opensearch',
+            showColumn: '_a=(discover:(columns:!(structured.message,structured.level,structured.request_url,structured.request_body),isDirty:!t,sort:!()),',
+            queryParam: 'key:structured.request_url,negate:!f,params:(query:%2Fexternal%2Fv1%2Fpayment%2Fcreate-payment),type:phrase),query:(match_phrase:(structured.request_url:%2Fexternal%2Fv1%2Fpayment%2Fcreate-payment)))),query:(language:kuery,query:\'\'))',
+            order: 1,
+            searchAble: false,
+            usedFilter: true,
+            placeholder: '输入搜索关键词'
+        },
+        {
+            id: 'searchadminportallog',
+            name: 'search recent admin portal log',
+            category: 'opensearch',
+            showColumn: '_a=(discover:(columns:!(structured.username,structured.request_method,structured.method_name,structured.request_body),isDirty:!t,sort:!()),',
+            queryParam: 'key:structured.request_url,negate:!f,params:(query:%2Fexternal%2Fv1%2Fpayment%2Fcreate-payment),type:phrase),query:(match_phrase:(structured.request_url:%2Fexternal%2Fv1%2Fpayment%2Fcreate-payment)))),query:(language:kuery,query:\'\'))',
+            order: 1,
+            searchAble: false,
+            usedFilter: true,
             placeholder: '输入搜索关键词'
         },
 
 
     ];
-
+    loadEnvironment()
+    if (currentCategory !== 'opensearch') {
+        timeSwitcherContainer.classList.add('hidden');
+    }
+    loadTimeSelector()
     // 初始化 - 设置默认环境
-    setEnvironment('dev');
+    setEnvironment(currentEnv);
+    setTimeSelector(currentTime);
     allSites = sites;
     filteredSites = sites.filter(site => site.category === currentCategory);
     renderSites(filteredSites);
@@ -462,7 +724,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 如果有搜索词，进一步筛选
         if (searchTerm) {
-            filteredSites = filteredSites.filter(site => site.name.toLowerCase().includes(searchTerm) || site.placeholder.toLowerCase().includes(searchTerm));
+            filteredSites = filteredSites.filter(site => site.name.toLowerCase().includes(searchTerm));
         }
 
         // 渲染网站列表
@@ -506,14 +768,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     rowElement2.innerHTML = `
                     <button class="site-button svc-base"  data-site-id="${site.id}">
                         <img width="15px" height="15px" src="https://www.redhat.com/favicon.ico"></img>
-                        <span>Red Hat</span>
+                        <span>RedHat</span>
                     </button>
                 `;
 
                     sitesContainer.appendChild(rowElement2);
                     rowElement2.querySelector('.svc-base').addEventListener('click', function () {
                         const siteId = this.getAttribute('data-site-id');
-                        openSite(siteId);
+                        openServerRelatedSite(siteId, 'redhat');
 
                     });
                     const rowElement3 = document.createElement('div');
@@ -527,7 +789,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     sitesContainer.appendChild(rowElement3);
                     rowElement3.querySelector('.svc-base').addEventListener('click', function () {
                         const siteId = this.getAttribute('data-site-id');
-                        openSite(siteId);
+                        openServerRelatedSite(siteId, 'argo');
 
                     });
 
@@ -539,13 +801,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     rowElement4.innerHTML = `
                     <button class="site-button svc-base"  data-site-id="${site.id}">
                         <img width="15px" height="15px" src="${site.icon}"></img>
-                        <span>APIVersion</span>
+                        <span>ApiVer</span>
                     </button>
                 `;
                     sitesContainer.appendChild(rowElement4);
                     rowElement4.querySelector('.svc-base').addEventListener('click', function () {
                         const siteId = this.getAttribute('data-site-id');
-                        openServerRelatedSite(siteId,'apiversion');
+                        openServerRelatedSite(siteId, 'apiversion');
 
                     });
                 }
@@ -559,12 +821,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span>Repository</span>
                     </button>
                 `;
-                changeSitesContainerType("layout-table")
 
                 sitesContainer.appendChild(rowElement5);
                 rowElement5.querySelector('.svc-base').addEventListener('click', function () {
                     const siteId = this.getAttribute('data-site-id');
-                    openServerRelatedSite(siteId,'repository');
+                    openServerRelatedSite(siteId, 'repository');
 
                 });
 
@@ -576,11 +837,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span>Merge</span>
                     </button>
                 `;
-                changeSitesContainerType("layout-table")
                 sitesContainer.appendChild(rowElement6);
                 rowElement6.querySelector('.svc-merge').addEventListener('click', function () {
                     const siteId = this.getAttribute('data-site-id');
-                    openServerRelatedSite(siteId,'merge');
+                    openServerRelatedSite(siteId, 'merge');
 
                 });
                 const rowElement7 = document.createElement('div');
@@ -591,14 +851,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span>Release</span>
                     </button>
                 `;
-                changeSitesContainerType("layout-table")
                 sitesContainer.appendChild(rowElement7);
                 rowElement7.querySelector('.svc-release').addEventListener('click', function () {
                     const siteId = this.getAttribute('data-site-id');
-                    openServerRelatedSite(siteId,'release');
+                    openServerRelatedSite(siteId, 'release');
 
                 });
-
 
             }
 
@@ -612,14 +870,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span>${site.name}</span>
                     </button>
                 `;
-
-                changeSitesContainerType("layout-table")
                 sitesContainer.appendChild(rowElement);
 
                 // 添加打开按钮事件
                 rowElement.querySelector('.site-button').addEventListener('click', function () {
                     const siteId = this.getAttribute('data-site-id');
-                    openSite(siteId);
+                    openHKExpressSite(siteId);
 
                 });
 
@@ -633,63 +889,100 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span>${site.name}</span>
                     </button>
                 `;
-
-                changeSitesContainerType("layout-table")
                 sitesContainer.appendChild(rowElement);
 
                 // 添加打开按钮事件
                 rowElement.querySelector('.site-button').addEventListener('click', function () {
                     const siteId = this.getAttribute('data-site-id');
-                    openSite(siteId);
+                    openNormalSite(siteId);
 
                 });
 
             }
 
-
             if (site.category == 'opensearch') {
-                rowElement.className = 'site-row';
-                rowElement.innerHTML = `
-                    <div class="site-name">
-                        <i class="${site.icon}"></i>
-                        <span>${site.name}</span>
-                    </div>
+                const rowElement1 = document.createElement('div');
+                rowElement1.className = 'github-svc-div';
+                rowElement1.innerHTML = `
+                        <p class="github-svc-name"> <span><i class="fas fa-search"></i></i></span> ${site.name}</p>
+                `;
+                sitesContainer.appendChild(rowElement1);
+
+
+                if (site.searchAble) {
+                    const rowElement5 = document.createElement('div');
+                    rowElement5.className = 'site-container';
+                    rowElement5.innerHTML = `
                     <div  class="param-input">
                         <input type="text"
                                id="input-${site.id}"
                                placeholder="${site.placeholder}"
                                data-site-id="${site.id}">
                     </div>
-                    <button  class="open-btn" data-site-id="${site.id}">
-                        <i class="fas fa-external-link-alt"></i>
-                        打开
+                    <button  class="opensearch-btn" data-site-id="${site.id}">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        
                     </button>
                 `;
-                changeSitesContainerType("layout-table")
-                // 添加打开按钮事件
-                rowElement.querySelector('.open-btn').addEventListener('click', function () {
-                    const siteId = this.getAttribute('data-site-id');
-                    openSite(siteId);
-                });
+                    sitesContainer.appendChild(rowElement5);
+                    rowElement5.querySelector('.opensearch-btn').addEventListener('click', function () {
+                        const siteId = this.getAttribute('data-site-id');
+                        openOpensearch(siteId);
+                    });
+                } else {
+                    const rowElement5 = document.createElement('div');
+                    rowElement5.className = 'site-container';
+                    rowElement5.innerHTML = `
+                    <div style="opacity:0.5; pointer-events: none;" class="param-input">
+                        <input type="text"
+                               id="input-${site.id}"
+                               placeholder="NA"
+                               data-site-id="${site.id}">
+                    </div>
+                    <button  class="opensearch-btn" data-site-id="${site.id}">
+                       <i class="fa-solid fa-magnifying-glass"></i>
+                       
+                    </button>
+                `;
+                    sitesContainer.appendChild(rowElement5);
+                    rowElement5.querySelector('.opensearch-btn').addEventListener('click', function () {
+                        const siteId = this.getAttribute('data-site-id');
+                        openOpensearch(siteId);
+                    });
+                }
 
-                // 添加点击网站名聚焦输入框
-                rowElement.querySelector('.site-name').addEventListener('click', function () {
-                    inputField.focus();
-                });
 
             }
 
-
         });
+        if (sitesToRender[0].category == 'opensearch') {
+            changeSitesContainerType('layout-grid')
+        } else {
+            changeSitesContainerType('layout-table')
+        }
     }
 
     function changeSitesContainerType(type) {
-        if (sitesContainer.classList.contains(type)) {
-            return;
+
+        let siteContainers = sitesContainer.getElementsByClassName("site-container");
+        for (let i = 0; i < siteContainers.length; i++) {
+            siteContainers[i].classList.add(type)
         }
-        const cssList = ["layout-grid", "layout-table"]
-        cssList.filter(css => css != type).forEach(css => sitesContainer.classList.remove(css))
-        sitesContainer.classList.add(type);
+
+
+        // if(siteContainers != null && siteContainers.length >0){
+        //     siteContainers.forEach(siteContainer => {
+        //         console.log(siteContainer)
+        //         siteContainer.classList.add(type)
+        //     });
+        // }
+        //
+        // if (siteContainer.classList.contains(type)) {
+        //     return;
+        // }
+        // const cssList = ["layout-grid", "layout-table"]
+        // cssList.filter(css => css != type).forEach(css => siteContainer.classList.remove(css))
+
     }
 
     function openServerRelatedSite(siteId, type) {
@@ -699,6 +992,12 @@ document.addEventListener('DOMContentLoaded', function () {
         // 对参数进行编码
         var fullUrl = ''
         switch (type) {
+            case 'redhat':
+                fullUrl = redhatBaseUrl.baseUrl + site.project[currentEnv] + redhatBaseUrl.url1 + site.repositoryName + redhatBaseUrl.url2
+                break;
+            case 'argo':
+                fullUrl = argo.baseUrl + site.project[currentEnv] + argo.url1
+                break;
             case 'apiversion':
                 fullUrl = githubBaseUrl.baseUrl + site.repositoryName + githubBaseUrl.apiVersionParam + site.packagesId
                 break;
@@ -724,7 +1023,70 @@ document.addEventListener('DOMContentLoaded', function () {
         showNotification(`正在打开: ${site.name}`);
     }
 
-    // 打开网站函数
+    function openHKExpressSite(siteId) {
+        const site = sites.find(s => s.id === siteId);
+        if (!site) return;
+        // 获取当前环境的URL
+        const baseUrl = site.baseUrl[currentEnv];
+        const fullUrl = baseUrl;
+        // 在实际Chrome扩展中，使用chrome.tabs.create打开网页
+        if (typeof chrome !== 'undefined' && chrome.tabs) {
+            chrome.tabs.create({url: fullUrl});
+        } else {
+            // 在普通浏览器环境中测试
+            window.open(fullUrl, '_blank');
+        }
+        showNotification(`正在打开: ${site.name}`);
+    }
+
+    function openNormalSite(siteId) {
+        const site = sites.find(s => s.id === siteId);
+        if (!site) return;
+        // 获取当前环境的URL
+
+        const fullUrl = site.url;
+        // 在实际Chrome扩展中，使用chrome.tabs.create打开网页
+        if (typeof chrome !== 'undefined' && chrome.tabs) {
+            chrome.tabs.create({url: fullUrl});
+        } else {
+            // 在普通浏览器环境中测试
+            window.open(fullUrl, '_blank');
+        }
+        showNotification(`正在打开: ${site.name}`);
+    }
+
+    function openOpensearch(siteId) {
+        const site = sites.find(s => s.id === siteId);
+
+        const inputElement = document.getElementById(`input-${siteId}`);
+        const param = site.searchAble ? inputElement.value.trim() : '';
+
+        if (!site) return;
+        const baseUrl = opensearch.baseUrl[currentEnv];
+        const showColumn = site.showColumn;
+        const index = opensearch.indexParam.replace('$1', opensearch.indexPattern[currentEnv])
+        const time = opensearch.timeSelector[currentTime]
+        var filterIndex = ''
+
+        if (site.usedFilter === true) {
+            filterIndex = opensearch.filterIndex.replace('$1', opensearch.indexPattern[currentEnv])
+        }
+
+        var queryParam = site.queryParam;
+        if (site.searchAble === true) {
+            queryParam = queryParam.replace('$1', param)
+        }
+        const fullUrl = baseUrl + showColumn + index + time + filterIndex + queryParam;
+
+        if (typeof chrome !== 'undefined' && chrome.tabs) {
+            chrome.tabs.create({url: fullUrl});
+        } else {
+            // 在普通浏览器环境中测试
+            window.open(fullUrl, '_blank');
+        }
+        showNotification(`正在打开: ${site.name}`);
+    }
+
     function openSite(siteId) {
         const site = sites.find(s => s.id === siteId);
         if (!site) return;
@@ -737,7 +1099,6 @@ document.addEventListener('DOMContentLoaded', function () {
             inputElement.focus();
             return;
         }
-
         // 获取当前环境的URL
         const baseUrl = site.baseUrl[currentEnv];
 

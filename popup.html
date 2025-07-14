@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .hidden {
-            display: none;
+            display: none !important;
         }
 
         * {
@@ -15,14 +15,22 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
         }
 
         html, body {
             background-color: transparent !important;
+            max-height: 500px !important;
+
         }
+        /*body::-webkit-scrollbar {*/
+        /*    width: 0 !important; !* 隐藏垂直滚动条 *!*/
+        /*    height: 0 !important; !* 隐藏水平滚动条 *!*/
+        /*}*/
 
         body {
             width: 450px;
+
             border: none !important;
             box-shadow: none !important;
             color: rgba(255, 255, 255, 0);
@@ -31,14 +39,7 @@
             overflow: hidden;
         }
 
-        .popup-container {
-            position: relative;
-            overflow: hidden;
-            background: white;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            border-radius: 10px;
-        }
+
 
         .github-svc-div {
             margin: auto;
@@ -104,36 +105,30 @@
 
         .sites-container {
             overflow-y: auto;
+            overflow-x: hidden;
             padding: 10px 15px 15px;
+
             max-width: 500px;
             margin: 5px;
             display: flex;
             flex-wrap: wrap;
-
-        }
-
-        .layout-table {
-            max-width: 500px;
-            margin: 5px;
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .layout-grid {
-            display: table;
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 7px;
         }
 
         .site-container {
-            display: table-cell;
             padding: 7px;
             align-items: center;
             background: white;
             margin-bottom: 12px;
             overflow: hidden;
             transition: all 0.2s ease;
+        }
+
+        .layout-table {
+            display: table-cell;
+        }
+
+        .layout-grid {
+            display: flex;
         }
 
         .site-row {
@@ -207,13 +202,18 @@
         }
 
         .param-input {
+            width: 300px;
             flex: 1;
             padding: 0 15px;
+            margin-left: 5px;
+            border: 3px solid rgb(112, 43, 145);
+            border-radius: 30px;
         }
 
         .param-input input {
             width: 100%;
             padding: 12px 0;
+
             border: none;
             background: transparent;
             font-size: 14px;
@@ -228,8 +228,17 @@
             color: #94a3b8;
         }
 
-        .open-btn {
-            background: #4f46e5;
+        .param-input:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 5px 7px rgba(0, 0, 0, 0.4);
+        }
+
+
+        .opensearch-btn {
+            background: rgb(112, 43, 145);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3),
+            inset 0 2px 5px rgba(0, 0, 0, 0.4);
+            margin-left: 20px;
             color: white;
             border: none;
             padding: 0 15px;
@@ -237,10 +246,24 @@
             cursor: pointer;
             transition: all 0.2s;
             font-weight: 500;
+            border-radius: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
             min-width: 60px;
+        }
+
+        .opensearch-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 7px rgba(0, 0, 0, 0.4);
+        }
+
+        .opensearch-btn:active {
+            transform: translateY(1px) !important;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3),
+            inset 0 2px 5px rgba(0, 0, 0, 0.4);
+            animation: bounce 0.6s ease;
+            outline: none
         }
 
         .open-btn:hover {
@@ -257,7 +280,7 @@
             border-top: 1px solid #e2e8f0;
             text-align: center;
             color: #64748b;
-            font-size: 12px;
+            font-size: 10px;
         }
 
         /* 滚动条样式 */
@@ -310,8 +333,25 @@
             position: relative;
             display: inline-block;
         }
+        .time-switcher{
+            position: relative;
+            display: inline-block;
+        }
 
         .env-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .time-button {
             background: rgba(255, 255, 255, 0.2);
             color: white;
             border: none;
@@ -328,6 +368,9 @@
         .env-button:hover {
             background: rgba(255, 255, 255, 0.3);
         }
+        .time-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
 
         .env-dropdown {
             display: none;
@@ -335,7 +378,21 @@
             top: 100%;
             right: 0;
             background: white;
-            min-width: 105px;
+            min-width: 100px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+            z-index: 100;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .timeSelector-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            min-width: 80px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             border-radius: 6px;
             z-index: 100;
@@ -352,11 +409,26 @@
             border-bottom: 1px solid #f1f5f9;
         }
 
+        .timeSelector-dropdown a {
+            display: block;
+            padding: 10px 5px;
+            color: #334155;
+            text-decoration: none;
+            font-size: 13px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
         .env-dropdown a:hover {
+            background: #f1f5f9;
+        }
+        .timeSelector-dropdown a:hover {
             background: #f1f5f9;
         }
 
         .env-dropdown.show {
+            display: block;
+        }
+        .timeSelector-dropdown.show {
             display: block;
         }
 
@@ -392,21 +464,6 @@
             text-transform: uppercase;
         }
 
-        .prod-tag {
-            background: #10b981;
-            color: white;
-        }
-
-        .uat-tag {
-            background: #f59e0b;
-            color: white;
-        }
-
-        .dev-tag {
-            background: #ef4444;
-            color: white;
-        }
-
         /* 分页标签 */
         .category-tabs {
             display: flex;
@@ -425,7 +482,7 @@
             font-weight: 500;
             color: #64748b;
             cursor: pointer;
-            border-radius: 5px 5px 0 0;
+            border-radius: 7px 7px 0 0;
             transition: all 0.2s;
             display: flex;
             align-items: center;
@@ -478,12 +535,31 @@
 <div class="popup-container">
     <!-- 弹出窗口头部 -->
     <div class="popup-header">
-
         <img width="20%" height="20%" src="
 https://www.hkexpress.com/_next/image?url=https%3A%2F%2Fedge.sitecorecloud.io%2Fa176b33fb1db-testingf895-hkeproducti37b0-1e24%2Fmedia%2FDesign-Components%2FHKE-icon%2FHKE---Logo1.svg%3Fh%3D32%26iar%3D0%26w%3D122%26hash%3D20250711T025055&w=750&q=75">
         <h1></h1>
 
-        <!-- 环境切换器 -->
+        <div class="time-switcher hidden"  id="timeSwitcherContainer">
+            <button class="time-button" id="timeButton">
+                <i class="fa-solid fa-circle-check"></i>
+                <span id="currentTimeSelector">Period</span>
+            </button>
+            <div class="timeSelector-dropdown" id="timeDropdown">
+                <a href="#" data-env="h1">
+                    1 Hour
+                </a>
+                <a href="#" data-env="d1">
+                    1 Day
+                </a>
+                <a href="#" data-env="w1">
+                    1 Week
+                </a>
+                <a href="#" data-env="m1">
+                    1 Month
+                </a>
+            </div>
+        </div>
+
         <div class="env-switcher">
             <button class="env-button" id="envButton">
                 <i class="fas fa-globe"></i>
@@ -502,11 +578,11 @@ https://www.hkexpress.com/_next/image?url=https%3A%2F%2Fedge.sitecorecloud.io%2F
                     <i class="fa-solid fa-poo"></i>
                     DEV
                 </a>
-                <a href="#" data-env="dev">
+                <a href="#" data-env="nextdev">
                     <i class="fa-solid fa-poo"></i>
                     NEXT-DEV
                 </a>
-                <a href="#" data-env="dev">
+                <a href="#" data-env="nextuat">
                     <i class="fa-solid fa-poo"></i>
                     NEXT-UAT
                 </a>
@@ -536,12 +612,12 @@ https://www.hkexpress.com/_next/image?url=https%3A%2F%2Fedge.sitecorecloud.io%2F
 
     <!-- 搜索框 -->
     <div class="search-box">
-        <input type="text" id="searchInput" placeholder="搜索网站...">
+        <input type="text" id="searchInput" placeholder="Search...">
         <i class="fas fa-search"></i>
     </div>
 
     <!-- 网站列表容器 -->
-    <div class="sites-container layout-table" id="sitesContainer">
+    <div class="sites-container" id="sitesContainer">
         <!-- 网站行将通过JavaScript动态生成 -->
     </div>
 
