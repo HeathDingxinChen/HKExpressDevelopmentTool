@@ -114,7 +114,18 @@
             flex-wrap: wrap;
         }
 
-        .site-container {
+        .layout-table.site-container {
+            display: table-cell;
+            padding: 7px;
+            align-items: center;
+            background: white;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .layout-grid.site-container {
+            display: flex;
             padding: 7px;
             align-items: center;
             background: white;
@@ -124,11 +135,11 @@
         }
 
         .layout-table {
-            display: table-cell;
+
         }
 
         .layout-grid {
-            display: flex;
+
         }
 
         .site-row {

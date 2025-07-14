@@ -29,16 +29,6 @@ document.addEventListener('DOMContentLoaded', function () {
         h1: '1 Hour', d1: '1 Day', w1: '1 Week', m1: '1 Month'
     };
 
-    // // 环境标签映射
-    // const envTags = {
-    //     prod: 'PROD', uat: 'UAT', dev: 'DEV', nextdev: 'NEXT DEV', nextuat: 'NEXT UAT'
-    // };
-    //
-    // // 环境颜色类映射
-    // const envTagClasses = {
-    //     prod: 'prod-tag', uat: 'uat-tag', dev: 'dev-tag', nextdev: 'next-dev-tag', nextuat: 'next-uat-tag'
-    // };
-
     // 环境切换器事件
     envButton.addEventListener('click', function (e) {
         e.stopPropagation();
@@ -617,7 +607,7 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         {
             id: 'regextest',
-            name: 'Regex test',
+            name: 'Regex',
             icon: 'https://static.jyshare.com/images/c-runoob-logo.ico',
             category: 'others',
             url: 'https://www.jyshare.com/front-end/854/',
@@ -627,7 +617,7 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         {
             id: 'tokendecode',
-            name: 'JTW token',
+            name: 'JTW',
             icon: 'https://jwt.io/img/icon.svg\n',
             category: 'others',
             url: 'https://jwt.io/',
@@ -700,13 +690,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     ];
     loadEnvironment()
+    loadTimeSelector()
     if (currentCategory !== 'opensearch') {
         timeSwitcherContainer.classList.add('hidden');
     }
-    loadTimeSelector()
     // 初始化 - 设置默认环境
-    setEnvironment(currentEnv);
-    setTimeSelector(currentTime);
     allSites = sites;
     filteredSites = sites.filter(site => site.category === currentCategory);
     renderSites(filteredSites);
@@ -764,7 +752,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (site.deployable) {
                     const rowElement2 = document.createElement('div');
-                    rowElement2.className = 'site-container';
+                    rowElement2.className = 'layout-table site-container';
                     rowElement2.innerHTML = `
                     <button class="site-button svc-base"  data-site-id="${site.id}">
                         <img width="15px" height="15px" src="https://www.redhat.com/favicon.ico"></img>
@@ -779,7 +767,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     });
                     const rowElement3 = document.createElement('div');
-                    rowElement3.className = 'site-container';
+                    rowElement3.className = 'layout-table site-container';
                     rowElement3.innerHTML = `
                     <button class="site-button svc-base"  data-site-id="${site.id}">
                         <img width="15px" height="15px" src="https://openshift-gitops-server-openshift-gitops.apps.hkerosa-nonprod.o5ys.p1.openshiftapps.com/assets/favicon/favicon-32x32.png"></img>
@@ -797,7 +785,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (site.haveApi) {
                     const rowElement4 = document.createElement('div');
-                    rowElement4.className = 'site-container';
+                    rowElement4.className = 'layout-table site-container';
                     rowElement4.innerHTML = `
                     <button class="site-button svc-base"  data-site-id="${site.id}">
                         <img width="15px" height="15px" src="${site.icon}"></img>
@@ -814,7 +802,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                 const rowElement5 = document.createElement('div');
-                rowElement5.className = 'site-container';
+                rowElement5.className = 'layout-table site-container';
                 rowElement5.innerHTML = `
                     <button class="site-button svc-base"  data-site-id="${site.id}">
                         <img width="15px" height="15px" src="${site.icon}"></img>
@@ -830,7 +818,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 const rowElement6 = document.createElement('div');
-                rowElement6.className = 'site-container';
+                rowElement6.className = 'layout-table site-container';
                 rowElement6.innerHTML = `
                     <button class="site-button svc-merge"  data-site-id="${site.id}">
                         <img width="15px" height="15px" src="${site.icon}"></img>
@@ -844,7 +832,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 });
                 const rowElement7 = document.createElement('div');
-                rowElement7.className = 'site-container';
+                rowElement7.className = 'layout-table site-container';
                 rowElement7.innerHTML = `
                     <button class="site-button svc-release"  data-site-id="${site.id}">
                         <img width="15px" height="15px" src="${site.icon}"></img>
@@ -863,7 +851,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (site.category == 'hkexpress') {
                 const rowElement = document.createElement('div');
-                rowElement.className = 'site-container';
+                rowElement.className = 'layout-table site-container';
                 rowElement.innerHTML = `
                     <button class="site-button"  data-site-id="${site.id}">
                         <img width="15px" height="15px" src="${site.icon}"></img>
@@ -882,7 +870,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             if (site.category == 'others') {
                 const rowElement = document.createElement('div');
-                rowElement.className = 'site-container';
+                rowElement.className = 'layout-table site-container';
                 rowElement.innerHTML = `
                     <button class="site-button"  data-site-id="${site.id}">
                         <img width="15px" height="15px" src="${site.icon}"></img>
@@ -911,7 +899,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (site.searchAble) {
                     const rowElement5 = document.createElement('div');
-                    rowElement5.className = 'site-container';
+                    rowElement5.className = 'layout-grid site-container';
                     rowElement5.innerHTML = `
                     <div  class="param-input">
                         <input type="text"
@@ -931,7 +919,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                 } else {
                     const rowElement5 = document.createElement('div');
-                    rowElement5.className = 'site-container';
+                    rowElement5.className = 'layout-grid site-container';
                     rowElement5.innerHTML = `
                     <div style="opacity:0.5; pointer-events: none;" class="param-input">
                         <input type="text"
@@ -955,33 +943,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
         });
-        if (sitesToRender[0].category == 'opensearch') {
-            changeSitesContainerType('layout-grid')
-        } else {
-            changeSitesContainerType('layout-table')
-        }
-    }
-
-    function changeSitesContainerType(type) {
-
-        let siteContainers = sitesContainer.getElementsByClassName("site-container");
-        for (let i = 0; i < siteContainers.length; i++) {
-            siteContainers[i].classList.add(type)
-        }
-
-
-        // if(siteContainers != null && siteContainers.length >0){
-        //     siteContainers.forEach(siteContainer => {
-        //         console.log(siteContainer)
-        //         siteContainer.classList.add(type)
-        //     });
-        // }
-        //
-        // if (siteContainer.classList.contains(type)) {
-        //     return;
-        // }
-        // const cssList = ["layout-grid", "layout-table"]
-        // cssList.filter(css => css != type).forEach(css => siteContainer.classList.remove(css))
 
     }
 
@@ -1036,7 +997,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // 在普通浏览器环境中测试
             window.open(fullUrl, '_blank');
         }
-        showNotification(`正在打开: ${site.name}`);
+        // showNotification(`正在打开: ${site.name}`);
     }
 
     function openNormalSite(siteId) {
@@ -1052,7 +1013,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // 在普通浏览器环境中测试
             window.open(fullUrl, '_blank');
         }
-        showNotification(`正在打开: ${site.name}`);
+        // showNotification(`正在打开: ${site.name}`);
     }
 
     function openOpensearch(siteId) {
@@ -1084,37 +1045,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // 在普通浏览器环境中测试
             window.open(fullUrl, '_blank');
         }
-        showNotification(`正在打开: ${site.name}`);
-    }
-
-    function openSite(siteId) {
-        const site = sites.find(s => s.id === siteId);
-        if (!site) return;
-
-        const inputElement = document.getElementById(`input-${siteId}`);
-        const param = site.searchAble ? inputElement.value.trim() : '';
-
-        if (site.searchAble & !param) {
-            showNotification(`请输入${site.placeholder}`, true);
-            inputElement.focus();
-            return;
-        }
-        // 获取当前环境的URL
-        const baseUrl = site.baseUrl[currentEnv];
-
-        // 对参数进行编码
-        const encodedParam = encodeURIComponent(param);
-        const fullUrl = baseUrl + encodedParam;
-
-        // 在实际Chrome扩展中，使用chrome.tabs.create打开网页
-        if (typeof chrome !== 'undefined' && chrome.tabs) {
-            chrome.tabs.create({url: fullUrl});
-        } else {
-            // 在普通浏览器环境中测试
-            window.open(fullUrl, '_blank');
-        }
-
-        showNotification(`正在打开: ${site.name}`);
+        // showNotification(`正在打开: ${site.name}`);
     }
 
     // 显示通知
