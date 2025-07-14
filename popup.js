@@ -909,7 +909,7 @@ document.addEventListener('DOMContentLoaded', function () {
             window.open(fullUrl, '_blank');
         }
 
-        showNotification(`正在打开: ${site.name}`);
+        // showNotification(`正在打开: ${site.name}`);
     }
 
     function openHKExpressSite(siteId) {
