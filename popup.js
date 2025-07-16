@@ -275,11 +275,7 @@ document.addEventListener('DOMContentLoaded', function () {
         category: 'server',
         repositoryName: 'hkexpress-order-svc',
         project: {
-            dev: 'ibe-pci-dev',
-            uat: 'ibe-pci-uat',
-            prod: 'ibe-pci-uat',
-            nextdev: 'ibe-pci-next-dev',
-            nextuat: 'ibe-pci-next-uat',
+            dev: 'ibe-pci-dev', uat: 'ibe-pci-uat', prod: 'ibe-pci-uat', nextdev: 'ibe-pci-next-dev', nextuat: 'ibe-pci-next-uat',
         },
         order: 1,
         haveApi: true,
@@ -339,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function () {
         repositoryName: 'hkexpress-payment-svc',
         packagesId: '2167420',
         project: {
-            dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
+            dev: 'ibe-dev', uat: 'ibe-pci-uat', prod: 'ibe-pci-uat', nextdev: 'ibe-pci-next-dev', nextuat: 'ibe-pci-next-uat',
         },
         order: 1,
         haveApi: true,
@@ -354,7 +350,7 @@ document.addEventListener('DOMContentLoaded', function () {
         repositoryName: 'hkexpress-admin-svc',
         packagesId: '2146705',
         project: {
-            dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
+            dev: 'ibe-pci-dev', uat: 'ibe-pci-uat', prod: 'ibe-pci-uat', nextdev: 'ibe-pci-next-dev', nextuat: 'ibe-pci-next-uat',
         },
         order: 1,
         haveApi: true,
@@ -594,10 +590,10 @@ document.addEventListener('DOMContentLoaded', function () {
         },
 
         {
-            id: 'searchcreatepaymentapicall',
+            id: 'searchrecentcreatepaymentapicall',
             name: 'search recent create payment api call',
             category: 'opensearch',
-            showColumn: '_a=(discover:(columns:!(structured.message,structured.level,structured.request_url,structured.request_body),isDirty:!t,sort:!()),',
+            showColumn: '_a=(discover:(columns:!(structured.message,structured.request_url,structured.request_body,structured.logging_http_request_header.nsk_token,structured.traceId),isDirty:!t,sort:!()),',
             queryParam: 'key:structured.request_url,negate:!f,params:(query:%2Fexternal%2Fv1%2Fpayment%2Fcreate-payment),type:phrase),query:(match_phrase:(structured.request_url:%2Fexternal%2Fv1%2Fpayment%2Fcreate-payment)))),query:(language:kuery,query:\'\'))',
             order: 1,
             searchAble: false,
@@ -613,6 +609,17 @@ document.addEventListener('DOMContentLoaded', function () {
             searchAble: false,
             usedFilter: true,
             placeholder: '输入搜索关键词'
+        },
+        {
+            id: 'searchlongpollingapilog',
+            name: 'search long polling api log',
+            category: 'opensearch',
+            showColumn: '_a=(discover:(columns:!(structured.message,structured.request_url,structured.request_body,structured.response_body),isDirty:!t,sort:!()),',
+            queryParam: 'key:structured.request_url,negate:!f,params:(query:\'http:%2F%2Firp-dev-api.hkexpress.com%2Fv1%2Forder%2F$1%2Fpolling-status\'),type:phrase),query:(match_phrase:(structured.request_url:\'http:%2F%2Firp-dev-api.hkexpress.com%2Fv1%2Forder%2F$1%2Fpolling-status\')))),query:(language:kuery,query:\'\'))',
+            order: 1,
+            searchAble: true,
+            usedFilter: true,
+            placeholder: 'please enter order Id'
         },
 
 
@@ -963,8 +970,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var queryParam = site.queryParam;
         if (site.searchAble === true) {
-            queryParam = queryParam.replace('$1', param)
+            queryParam = queryParam.replaceAll('$1', param)
         }
+        console.log(queryParam)
+
         const fullUrl = baseUrl + showColumn + index + time + filterIndex + queryParam;
 
         if (typeof chrome !== 'undefined' && chrome.tabs) {
