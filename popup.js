@@ -15,6 +15,465 @@ document.addEventListener('DOMContentLoaded', function () {
     const tabButtons = document.querySelectorAll('.tab-btn');
 
 
+    // 预定义网站配置（支持多环境）
+    const sites = [{
+        id: 'hkexpress',
+        name: 'HKExpress',
+        icon: 'icons/hke_little.ico',
+        category: 'hkexpress',
+        baseUrl: {
+            prod: 'https://mybooking.hkexpress.com/en',
+            uat: 'https://irp-uat-booking.hkexpress.com/en',
+            dev: 'https://irp-dev-booking.hkexpress.com/en',
+            nextdev: 'https://irp-next-dev-booking.hkexpress.com/en',
+            nextuat: 'https://irp-next-uat-booking.hkexpress.com/en'
+        },
+        order: 1,
+        searchAble: false,
+
+    }, {
+        id: 'fullasia',
+        name: 'AMPortal',
+        icon: 'icons/hke_little.ico',
+        category: 'hkexpress',
+        baseUrl: {
+            prod: 'https://mybooking.hkexpress.com/en-HK/full-miles-redemption/login',
+            uat: 'https://irp-uat-booking.hkexpress.com/en/full-miles-redemption/login',
+            dev: 'https://irp-dev-booking.hkexpress.com/en/full-miles-redemption/login',
+            nextdev: 'https://irp-next-dev-booking.hkexpress.com/en/full-miles-redemption/login',
+            nextuat: 'https://irp-next-uat-booking.hkexpress.com/en/full-miles-redemption/login'
+        },
+        order: 1,
+        searchAble: false,
+
+    }, {
+        id: 'adminportal',
+        name: 'AdminPortal',
+        icon: 'icons/hke_little.ico',
+        category: 'hkexpress',
+        baseUrl: {
+            prod: 'https://admin.hkexpress.com/dashboard',
+            uat: 'https://irp-uat-admin.hkexpress.com/',
+            dev: 'https://irp-dev-admin.hkexpress.com/',
+            nextdev: 'https://irp-next-dev-admin.hkexpress.com/',
+            nextuat: 'https://irp-next-uat-admin.hkexpress.com/'
+        },
+        order: 1,
+        searchAble: false,
+
+    }, {
+        id: 'b2bhkexpress',
+        name: 'B2B',
+        icon: 'icons/hke_little.ico',
+        category: 'hkexpress',
+        baseUrl: {
+            prod: 'https://mybooking.hkexpress.com/en/b2b/login',
+            uat: 'https://irp-uat-booking.hkexpress.com/en/b2b/login',
+            dev: 'https://irp-dev-booking.hkexpress.com/en/b2b/login',
+            nextdev: 'https://irp-next-dev-booking.hkexpress.com/en/b2b/login',
+            nextuat: 'https://irp-next-uat-booking.hkexpress.com/en/b2b/login'
+        },
+        order: 1,
+        searchAble: false,
+
+    }, {
+        id: 'sitecore',
+        name: 'Sitecore',
+        icon: 'icons/sitecore.ico',
+        category: 'hkexpress',
+        baseUrl: {
+            prod: 'https://api.hkexpress.com/public/v1/content-management/list?lang=en&application_code=ALL&channel=app',
+            uat: 'https://irp-uat-edge.hkexpress.com/i18n/en/web.json',
+            dev: 'https://irp-dev-edge.hkexpress.com/i18n/en/web.json',
+            nextdev: 'https://irp-next-dev-edge.hkexpress.com/i18n/en/web.json',
+            nextuat: 'https://irp-next-uat-edge.hkexpress.com/i18n/en/web.json'
+        },
+        order: 1,
+        searchAble: false,
+
+    }, {
+        id: 'githubquery',
+        name: 'Query Service',
+        icon: 'icons/github.svg',
+        category: 'server',
+        repositoryName: 'hkexpress-flt-booking-query-svc',
+        packagesId: '2167397',
+        project: {
+            dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
+        },
+        order: 1,
+        haveApi: true,
+        deployable: true,
+        searchAble: false,
+
+    }, {
+        id: 'githuborder',
+        name: 'Order Service',
+        icon: 'icons/github.svg',
+        category: 'server',
+        repositoryName: 'hkexpress-order-svc',
+        project: {
+            dev: 'ibe-pci-dev', uat: 'ibe-pci-uat', prod: 'ibe-pci-uat', nextdev: 'ibe-pci-next-dev', nextuat: 'ibe-pci-next-uat',
+        },
+        order: 1,
+        haveApi: true,
+        deployable: true,
+        searchAble: false,
+
+    }, {
+        id: 'githubmgmt',
+        name: 'Mgmt Service',
+        icon: 'icons/github.svg',
+        category: 'server',
+        repositoryName: 'hkexpress-flt-booking-mgmt-svc',
+        packagesId: '2167465',
+        project: {
+            dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
+        },
+        order: 1,
+        haveApi: true,
+        deployable: true,
+        searchAble: false,
+
+    }, {
+        id: 'githubauth',
+        name: 'Auth Service',
+        icon: 'icons/github.svg',
+        category: 'server',
+        repositoryName: 'hkexpress-auth-svc',
+        packagesId: '2167512',
+        project: {
+            dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
+        },
+        order: 1,
+        haveApi: true,
+        deployable: true,
+        searchAble: false,
+
+    }, {
+        id: 'githubnotification',
+        name: 'Notication Service',
+        icon: 'icons/github.svg',
+        category: 'server',
+        repositoryName: 'hkexpress-notification-svc',
+        packagesId: '2164074',
+        project: {
+            dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
+        },
+        order: 1,
+        haveApi: true,
+        deployable: true,
+        searchAble: false,
+
+    }, {
+        id: 'githubpayment',
+        name: 'Payment Service',
+        icon: 'icons/github.svg',
+        category: 'server',
+        repositoryName: 'hkexpress-payment-svc',
+        packagesId: '2167420',
+        project: {
+            dev: 'ibe-dev', uat: 'ibe-pci-uat', prod: 'ibe-pci-uat', nextdev: 'ibe-pci-next-dev', nextuat: 'ibe-pci-next-uat',
+        },
+        order: 1,
+        haveApi: true,
+        deployable: true,
+        searchAble: false,
+
+    }, {
+        id: 'githubadmin',
+        name: 'Admint Service',
+        icon: 'icons/github.svg',
+        category: 'server',
+        repositoryName: 'hkexpress-admin-svc',
+        packagesId: '2146705',
+        project: {
+            dev: 'ibe-pci-dev', uat: 'ibe-pci-uat', prod: 'ibe-pci-uat', nextdev: 'ibe-pci-next-dev', nextuat: 'ibe-pci-next-uat',
+        },
+        order: 1,
+        haveApi: true,
+        deployable: true,
+        searchAble: false,
+
+    }, {
+        id: 'githubmember',
+        name: 'Member Service',
+        icon: 'icons/github.svg',
+        category: 'server',
+        repositoryName: 'hkexpress-member-svc',
+        packagesId: '2167453',
+        project: {
+            dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
+        },
+        order: 1,
+        haveApi: true,
+        deployable: true,
+        searchAble: false,
+
+    }, {
+        id: 'githubnonpssint',
+        name: 'Non pss int Service',
+        icon: 'icons/github.svg',
+        category: 'server',
+        repositoryName: 'hkexpress-non-pss-int-svc',
+        packagesId: '2167571',
+        project: {
+            dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
+        },
+        order: 1,
+        haveApi: true,
+        deployable: true,
+        searchAble: false,
+
+    }, {
+        id: 'githubnsklib',
+        name: 'Nsk Lib',
+        icon: 'icons/github.svg',
+        category: 'server',
+        repositoryName: 'hkexpress-nsk-api',
+        packagesId: '2170232',
+        order: 1,
+        haveApi: true,
+        deployable: false,
+        searchAble: false,
+
+    }, {
+        id: 'githubbaselib',
+        name: 'Base Lib',
+        icon: 'icons/github.svg',
+        category: 'server',
+        repositoryName: 'hkexpress-base-lib',
+        packagesId: '2146780',
+        order: 1,
+        haveApi: true,
+        deployable: false,
+        searchAble: false,
+
+    }, {
+        id: 'githubdevopsscript',
+        name: 'Devops script',
+        icon: 'icons/github.svg',
+        category: 'server',
+        repositoryName: 'hkexpress-devops-script',
+        order: 1,
+        haveApi: false,
+        deployable: false,
+        searchAble: false,
+
+    }, {
+        id: 'githubfrontend',
+        name: 'Front end',
+        icon: 'icons/github.svg',
+        category: 'server',
+        repositoryName: 'hkexpress-frontend-monorepo',
+        project: {
+            dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
+        },
+        order: 1,
+        haveApi: false,
+        deployable: true,
+        searchAble: false,
+
+    }, {
+        id: 'githubadminportal',
+        name: 'Admin portal',
+        icon: 'icons/github.svg',
+        category: 'server',
+        repositoryName: 'hkexpress-admin-portal',
+        project: {
+            dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
+        },
+        order: 1,
+        haveApi: false,
+        deployable: true,
+        searchAble: false,
+
+    }, {
+        id: 'githubnativemobile',
+        name: 'Native Mobile',
+        icon: 'icons/github.svg',
+        category: 'server',
+        repositoryName: 'hkexpress-react-native-mobile',
+        order: 1,
+        haveApi: false,
+        deployable: false,
+        searchAble: false,
+
+    }, {
+        id: 'jira',
+        name: 'Jira',
+        icon: 'icons/jira.ico',
+        category: 'others',
+        url: 'icons/jira.ico',
+        order: 1,
+        searchAble: false,
+
+    }, {
+        id: 'sendgrid',
+        name: 'Sendgrid',
+        icon: 'icons/sendgrid.ico',
+        category: 'others',
+        url: 'https://app.sendgrid.com/',
+        order: 1,
+        searchAble: false,
+
+    }, {
+        id: 'cognito',
+        name: 'Cognito',
+        icon: 'icons/cognito.ico',
+        category: 'others',
+        url: 'https://730335598856.signin.aws.amazon.com/console',
+        order: 1,
+        searchAble: false,
+
+    }, {
+        id: 'trueuptimesheet',
+        name: 'TimeSheet',
+        icon: 'icons/excel.svg',
+        category: 'others',
+        url: 'https://ts.accenture.com/:x:/r/sites/HKEAMS/_layouts/15/doc2.aspx?sourcedoc=%7B3CB24B6B-AA0D-42F5-AB5C-585EEC1BF713%7D&file=HKE%20AMS%20-%20Schedule%20Plan.xlsx&action=default&mobileredirect=true%20Sign%20in%20to%20your%20account',
+        order: 1,
+        searchAble: false,
+
+    }, {
+        id: 'figma',
+        name: 'Figma',
+        icon: 'icons/figma.svg',
+        category: 'others',
+        url: 'https://www.figma.com/file/XvxmcGKZMaaYAjqqExhT3b/HKE-Collaborate?fuid=1390530896643064924',
+        order: 1,
+        searchAble: false,
+
+    }, {
+        id: 'nskswagger',
+        name: 'NskSwagger',
+        icon: 'icons/swagger.svg',
+        category: 'others',
+        url: 'https://dotrezapir4x-akm.test.uo.navitaire.com/swagger/index.html#/token/nsk_v1_token_post',
+        order: 1,
+        searchAble: false,
+
+    }, {
+        id: 'k6',
+        name: 'K6',
+        icon: 'icons/k6.ico',
+        category: 'others',
+        url: 'https://app.k6.io/account/login',
+        order: 1,
+        searchAble: false,
+
+    }, {
+        id: 'jimu',
+        name: 'Jimu',
+        icon: 'icons/jimu.ico',
+        category: 'others',
+        url: 'https://jimutour.com/submitlogin.do',
+        order: 1,
+        searchAble: false,
+
+    }, {
+        id: 'regextest',
+        name: 'Regex',
+        icon: 'icons/regex.ico',
+        category: 'others',
+        url: 'https://www.jyshare.com/front-end/854/',
+        order: 1,
+        searchAble: false,
+
+    }, {
+        id: 'tokendecode',
+        name: 'JTW',
+        icon: 'icons/jwt.svg',
+        category: 'others',
+        url: 'https://jwt.io/',
+        order: 1,
+        searchAble: false,
+
+    },
+
+//         https://irp-nonprod-os.hkexpress.com/_dashboards/app/data-explorer/discover#?
+//     _a=(discover:(columns:!(structured.message,structured.level,structured.request_url,structured.request_body),isDirty:!t,sort:!()),
+//     metadata:(indexPattern:'1ddac3d0-29f4-11ef-8292-e1b84fc6127c',view:discover))
+// &_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-1w,to:now))&_q=(filters:!(),query:(language:kuery,query:''))
+        {
+            id: 'searchbytraceId',
+            name: 'search by trace Id',
+            category: 'opensearch',
+            showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body),isDirty:!t,sort:!()),',
+            queryParam: '&_q=(filters:!(),query:(language:kuery,query:\'$1\'))',
+            order: 1,
+            searchAble: true,
+            usedFilter: false,
+            placeholder: 'please enter trace Id'
+        }, {
+            id: 'searchlogbyorderId',
+            name: 'search by orderId',
+            category: 'opensearch',
+            showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body),isDirty:!t,sort:!()),',
+            queryParam: '&_q=(filters:!(),query:(language:kuery,query:\'$1\'))',
+            order: 1,
+            searchAble: true,
+            usedFilter: false,
+            placeholder: 'please enter order Id'
+        }, {
+            id: 'searchjimupayment',
+            name: 'search recent jimu api call',
+            category: 'opensearch',
+            order: 1,
+            searchAble: false,
+            usedFilter: true,
+            showColumn: '_a=(discover:(columns:!(structured.message,structured.level,structured.request_url,structured.request_body),isDirty:!t,sort:!()),',
+            queryParam: 'key:structured.request_url,negate:!f,params:(query:\'https:%2F%2Fapistores.jimutour.com%2Fapiworks%2Fpay%2Fscanqrcode%2Fgateway\'),type:phrase),query:(match_phrase:(structured.request_url:\'https:%2F%2Fapistores.jimutour.com%2Fapiworks%2Fpay%2Fscanqrcode%2Fgateway\')))),query:(language:kuery,query:\'\'))',
+            placeholder: '输入搜索关键词'
+        },
+
+        {
+            id: 'searchrecentcreatepaymentapicall',
+            name: 'search recent create payment api call',
+            category: 'opensearch',
+            showColumn: '_a=(discover:(columns:!(structured.message,structured.request_url,structured.request_body,structured.logging_http_request_header.nsk_token,structured.traceId),isDirty:!t,sort:!()),',
+            queryParam: 'key:structured.request_url,negate:!f,params:(query:%2Fexternal%2Fv1%2Fpayment%2Fcreate-payment),type:phrase),query:(match_phrase:(structured.request_url:%2Fexternal%2Fv1%2Fpayment%2Fcreate-payment)))),query:(language:kuery,query:\'\'))',
+            order: 1,
+            searchAble: false,
+            usedFilter: true,
+            placeholder: '输入搜索关键词'
+        }, {
+            id: 'searchadminportallog',
+            name: 'search recent admin portal log',
+            category: 'opensearch',
+            showColumn: '_a=(discover:(columns:!(structured.username,structured.request_method,structured.method_name,structured.request_body),isDirty:!t,sort:!()),',
+            queryParam: 'key:structured.request_url,negate:!f,params:(query:%2Fexternal%2Fv1%2Fpayment%2Fcreate-payment),type:phrase),query:(match_phrase:(structured.request_url:%2Fexternal%2Fv1%2Fpayment%2Fcreate-payment)))),query:(language:kuery,query:\'\'))',
+            order: 1,
+            searchAble: false,
+            usedFilter: true,
+            placeholder: '输入搜索关键词'
+        },
+        {
+            id: 'searchbooingstatebypnr',
+            name: 'search booking state by pnr',
+            category: 'opensearch',
+            showColumn: '_a=(discover:(columns:!(structured.message,structured.request_url,structured.request_body,structured.response_body),isDirty:!t,sort:!()),',
+            queryParam: "key:structured.request_url,negate:!f,params:(query:'https:%2F%2Fdotrezapir4x-akm.test.uo.navitaire.com%2Fapi%2Fnsk%2Fv1%2Fbooking%2Fretrieve%2FbyRecordLocator%2FO9WLVT'),type:phrase),query:(match_phrase:(structured.request_url:'https:%2F%2Fdotrezapir4x-akm.test.uo.navitaire.com%2Fapi%2Fnsk%2Fv1%2Fbooking%2Fretrieve%2FbyRecordLocator%2F$1')))),query:(language:kuery,query:\'\'))",
+            order: 1,
+            searchAble: true,
+            usedFilter: true,
+            placeholder: 'please enter pnr'
+        },
+        {
+            id: 'searchlongpollingapilog',
+            name: 'search long polling api log',
+            category: 'opensearch',
+            showColumn: '_a=(discover:(columns:!(structured.message,structured.request_url,structured.request_body,structured.response_body),isDirty:!t,sort:!()),',
+            queryParam: 'key:structured.request_url,negate:!f,params:(query:\'http:%2F%2Firp-dev-api.hkexpress.com%2Fv1%2Forder%2F$1%2Fpolling-status\'),type:phrase),query:(match_phrase:(structured.request_url:\'http:%2F%2Firp-dev-api.hkexpress.com%2Fv1%2Forder%2F$1%2Fpolling-status\')))),query:(language:kuery,query:\'\'))',
+            order: 1,
+            searchAble: true,
+            usedFilter: true,
+            placeholder: 'please enter order Id'
+        },
+
+
+    ];
+
     let currentEnv = 'dev';
     let currentTime = 'd1';
     let currentCategory = 'hkexpress';
@@ -159,14 +618,18 @@ document.addEventListener('DOMContentLoaded', function () {
         const savedEnv = localStorage.getItem('selectedEnv');
         if (savedEnv && envNames[savedEnv]) {
             currentEnv = savedEnv;
+            initEnvironment(currentEnv)
         }
+
     }
 
     function loadTimeSelector() {
         const savedTimeSelector = localStorage.getItem('selectedTime');
         if (savedTimeSelector && timeNames[savedTimeSelector]) {
             currentTime = savedTimeSelector;
+            initTimeSelector(currentTime)
         }
+
     }
 
     function saveEnvironment(env) {
@@ -177,457 +640,9 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('selectedTime', time);
     }
 
-    // 预定义网站配置（支持多环境）
-    const sites = [{
-        id: 'hkexpress',
-        name: 'HKExpress',
-        icon: 'https://mybooking.hkexpress.com/favicon.ico',
-        category: 'hkexpress',
-        baseUrl: {
-            prod: 'https://mybooking.hkexpress.com/en',
-            uat: 'https://irp-uat-booking.hkexpress.com/en',
-            dev: 'https://irp-dev-booking.hkexpress.com/en',
-            nextdev: 'https://irp-next-dev-booking.hkexpress.com/en',
-            nextuat: 'https://irp-next-uat-booking.hkexpress.com/en'
-        },
-        order: 1,
-        searchAble: false,
-
-    }, {
-        id: 'fullasia',
-        name: 'AMPortal',
-        icon: 'https://mybooking.hkexpress.com/favicon.ico',
-        category: 'hkexpress',
-        baseUrl: {
-            prod: 'https://mybooking.hkexpress.com/en-HK/full-miles-redemption/login',
-            uat: 'https://irp-uat-booking.hkexpress.com/en/full-miles-redemption/login',
-            dev: 'https://irp-dev-booking.hkexpress.com/en/full-miles-redemption/login',
-            nextdev: 'https://irp-next-dev-booking.hkexpress.com/en/full-miles-redemption/login',
-            nextuat: 'https://irp-next-uat-booking.hkexpress.com/en/full-miles-redemption/login'
-        },
-        order: 1,
-        searchAble: false,
-
-    }, {
-        id: 'adminportal',
-        name: 'AdminPortal',
-        icon: 'https://mybooking.hkexpress.com/favicon.ico',
-        category: 'hkexpress',
-        baseUrl: {
-            prod: 'https://admin.hkexpress.com/dashboard',
-            uat: 'https://irp-uat-admin.hkexpress.com/',
-            dev: 'https://irp-dev-admin.hkexpress.com/',
-            nextdev: 'https://irp-next-dev-admin.hkexpress.com/',
-            nextuat: 'https://irp-next-uat-admin.hkexpress.com/'
-        },
-        order: 1,
-        searchAble: false,
-
-    }, {
-        id: 'b2bhkexpress',
-        name: 'B2B',
-        icon: 'https://mybooking.hkexpress.com/favicon.ico',
-        category: 'hkexpress',
-        baseUrl: {
-            prod: 'https://mybooking.hkexpress.com/en/b2b/login',
-            uat: 'https://irp-uat-booking.hkexpress.com/en/b2b/login',
-            dev: 'https://irp-dev-booking.hkexpress.com/en/b2b/login',
-            nextdev: 'https://irp-next-dev-booking.hkexpress.com/en/b2b/login',
-            nextuat: 'https://irp-next-uat-booking.hkexpress.com/en/b2b/login'
-        },
-        order: 1,
-        searchAble: false,
-
-    }, {
-        id: 'sitecore',
-        name: 'Sitecore',
-        icon: 'https://www.sitecore.com/static/favicon.ico',
-        category: 'hkexpress',
-        baseUrl: {
-            prod: 'https://api.hkexpress.com/public/v1/content-management/list?lang=en&application_code=ALL&channel=app',
-            uat: 'https://irp-uat-edge.hkexpress.com/i18n/en/web.json',
-            dev: 'https://irp-dev-edge.hkexpress.com/i18n/en/web.json',
-            nextdev: 'https://irp-next-dev-edge.hkexpress.com/i18n/en/web.json',
-            nextuat: 'https://irp-next-uat-edge.hkexpress.com/i18n/en/web.json'
-        },
-        order: 1,
-        searchAble: false,
-
-    }, {
-        id: 'githubquery',
-        name: 'Query Service',
-        icon: 'https://github.githubassets.com/favicons/favicon.svg',
-        category: 'server',
-        repositoryName: 'hkexpress-flt-booking-query-svc',
-        packagesId: '2167397',
-        project: {
-            dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
-        },
-        order: 1,
-        haveApi: true,
-        deployable: true,
-        searchAble: false,
-
-    }, {
-        id: 'githuborder',
-        name: 'Order Service',
-        icon: 'https://github.githubassets.com/favicons/favicon.svg',
-        category: 'server',
-        repositoryName: 'hkexpress-order-svc',
-        project: {
-            dev: 'ibe-pci-dev', uat: 'ibe-pci-uat', prod: 'ibe-pci-uat', nextdev: 'ibe-pci-next-dev', nextuat: 'ibe-pci-next-uat',
-        },
-        order: 1,
-        haveApi: true,
-        deployable: true,
-        searchAble: false,
-
-    }, {
-        id: 'githubmgmt',
-        name: 'Mgmt Service',
-        icon: 'https://github.githubassets.com/favicons/favicon.svg',
-        category: 'server',
-        repositoryName: 'hkexpress-flt-booking-mgmt-svc',
-        packagesId: '2167465',
-        project: {
-            dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
-        },
-        order: 1,
-        haveApi: true,
-        deployable: true,
-        searchAble: false,
-
-    }, {
-        id: 'githubauth',
-        name: 'Auth Service',
-        icon: 'https://github.githubassets.com/favicons/favicon.svg',
-        category: 'server',
-        repositoryName: 'hkexpress-auth-svc',
-        packagesId: '2167512',
-        project: {
-            dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
-        },
-        order: 1,
-        haveApi: true,
-        deployable: true,
-        searchAble: false,
-
-    }, {
-        id: 'githubnotification',
-        name: 'Notication Service',
-        icon: 'https://github.githubassets.com/favicons/favicon.svg',
-        category: 'server',
-        repositoryName: 'hkexpress-notification-svc',
-        packagesId: '2164074',
-        project: {
-            dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
-        },
-        order: 1,
-        haveApi: true,
-        deployable: true,
-        searchAble: false,
-
-    }, {
-        id: 'githubpayment',
-        name: 'Payment Service',
-        icon: 'https://github.githubassets.com/favicons/favicon.svg',
-        category: 'server',
-        repositoryName: 'hkexpress-payment-svc',
-        packagesId: '2167420',
-        project: {
-            dev: 'ibe-dev', uat: 'ibe-pci-uat', prod: 'ibe-pci-uat', nextdev: 'ibe-pci-next-dev', nextuat: 'ibe-pci-next-uat',
-        },
-        order: 1,
-        haveApi: true,
-        deployable: true,
-        searchAble: false,
-
-    }, {
-        id: 'githubadmin',
-        name: 'Admint Service',
-        icon: 'https://github.githubassets.com/favicons/favicon.svg',
-        category: 'server',
-        repositoryName: 'hkexpress-admin-svc',
-        packagesId: '2146705',
-        project: {
-            dev: 'ibe-pci-dev', uat: 'ibe-pci-uat', prod: 'ibe-pci-uat', nextdev: 'ibe-pci-next-dev', nextuat: 'ibe-pci-next-uat',
-        },
-        order: 1,
-        haveApi: true,
-        deployable: true,
-        searchAble: false,
-
-    }, {
-        id: 'githubmember',
-        name: 'Member Service',
-        icon: 'https://github.githubassets.com/favicons/favicon.svg',
-        category: 'server',
-        repositoryName: 'hkexpress-member-svc',
-        packagesId: '2167453',
-        project: {
-            dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
-        },
-        order: 1,
-        haveApi: true,
-        deployable: true,
-        searchAble: false,
-
-    }, {
-        id: 'githubnonpssint',
-        name: 'Non pss int Service',
-        icon: 'https://github.githubassets.com/favicons/favicon.svg',
-        category: 'server',
-        repositoryName: 'hkexpress-non-pss-int-svc',
-        packagesId: '2167571',
-        project: {
-            dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
-        },
-        order: 1,
-        haveApi: true,
-        deployable: true,
-        searchAble: false,
-
-    }, {
-        id: 'githubnsklib',
-        name: 'Nsk Lib',
-        icon: 'https://github.githubassets.com/favicons/favicon.svg',
-        category: 'server',
-        repositoryName: 'hkexpress-nsk-api',
-        packagesId: '2170232',
-        order: 1,
-        haveApi: true,
-        deployable: false,
-        searchAble: false,
-
-    }, {
-        id: 'githubbaselib',
-        name: 'Base Lib',
-        icon: 'https://github.githubassets.com/favicons/favicon.svg',
-        category: 'server',
-        repositoryName: 'hkexpress-base-lib',
-        packagesId: '2146780',
-        order: 1,
-        haveApi: true,
-        deployable: false,
-        searchAble: false,
-
-    }, {
-        id: 'githubdevopsscript',
-        name: 'Devops script',
-        icon: 'https://github.githubassets.com/favicons/favicon.svg',
-        category: 'server',
-        repositoryName: 'hkexpress-devops-script',
-        order: 1,
-        haveApi: false,
-        deployable: false,
-        searchAble: false,
-
-    }, {
-        id: 'githubfrontend',
-        name: 'Front end',
-        icon: 'https://github.githubassets.com/favicons/favicon.svg',
-        category: 'server',
-        repositoryName: 'hkexpress-frontend-monorepo',
-        project: {
-            dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
-        },
-        order: 1,
-        haveApi: false,
-        deployable: true,
-        searchAble: false,
-
-    }, {
-        id: 'githubadminportal',
-        name: 'Admin portal',
-        icon: 'https://github.githubassets.com/favicons/favicon.svg',
-        category: 'server',
-        repositoryName: 'hkexpress-admin-portal',
-        project: {
-            dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
-        },
-        order: 1,
-        haveApi: false,
-        deployable: true,
-        searchAble: false,
-
-    }, {
-        id: 'githubnativemobile',
-        name: 'Native Mobile',
-        icon: 'https://github.githubassets.com/favicons/favicon.svg',
-        category: 'server',
-        repositoryName: 'hkexpress-react-native-mobile',
-        order: 1,
-        haveApi: false,
-        deployable: false,
-        searchAble: false,
-
-    }, {
-        id: 'jira',
-        name: 'Jira',
-        icon: 'https://www.atlassian.com/favicon.ico',
-        category: 'others',
-        url: 'https://hkexpress-uo.atlassian.net/jira/software/projects/UWA/boards/12',
-        order: 1,
-        searchAble: false,
-
-    }, {
-        id: 'sendgrid',
-        name: 'Sendgrid',
-        icon: 'https://login.sendgrid.com/favicon.ico',
-        category: 'others',
-        url: 'https://app.sendgrid.com/',
-        order: 1,
-        searchAble: false,
-
-    }, {
-        id: 'cognito',
-        name: 'Cognito',
-        icon: 'https://ap-southeast-2.signin.aws.amazon.com/favicon.ico',
-        category: 'others',
-        url: 'https://730335598856.signin.aws.amazon.com/console',
-        order: 1,
-        searchAble: false,
-
-    }, {
-        id: 'trueuptimesheet',
-        name: 'TimeSheet',
-        icon: 'https://res.cdn.office.net/files/fabric-cdn-prod_20230815.002/assets/brand-icons/product/svg/excel_32x1.svg',
-        category: 'others',
-        url: 'https://ts.accenture.com/:x:/r/sites/HKEAMS/_layouts/15/doc2.aspx?sourcedoc=%7B3CB24B6B-AA0D-42F5-AB5C-585EEC1BF713%7D&file=HKE%20AMS%20-%20Schedule%20Plan.xlsx&action=default&mobileredirect=true%20Sign%20in%20to%20your%20account',
-        order: 1,
-        searchAble: false,
-
-    }, {
-        id: 'figma',
-        name: 'Figma',
-        icon: 'https://static.figma.com/app/icon/1/favicon.svg',
-        category: 'others',
-        url: 'https://www.figma.com/file/XvxmcGKZMaaYAjqqExhT3b/HKE-Collaborate?fuid=1390530896643064924',
-        order: 1,
-        searchAble: false,
-
-    }, {
-        id: 'nskswagger',
-        name: 'NskSwagger',
-        icon: 'https://swagger.io/docs/favicon.svg',
-        category: 'others',
-        url: 'https://dotrezapir4x-akm.test.uo.navitaire.com/swagger/index.html#/token/nsk_v1_token_post',
-        order: 1,
-        searchAble: false,
-
-    }, {
-        id: 'k6',
-        name: 'K6',
-        icon: 'https://app.k6.io/favicon.ico',
-        category: 'others',
-        url: 'https://app.k6.io/account/login',
-        order: 1,
-        searchAble: false,
-
-    }, {
-        id: 'jimu',
-        name: 'Jimu',
-        icon: 'https://jimutour.com/favicon.ico',
-        category: 'others',
-        url: 'https://jimutour.com/submitlogin.do',
-        order: 1,
-        searchAble: false,
-
-    }, {
-        id: 'regextest',
-        name: 'Regex',
-        icon: 'https://static.jyshare.com/images/c-runoob-logo.ico',
-        category: 'others',
-        url: 'https://www.jyshare.com/front-end/854/',
-        order: 1,
-        searchAble: false,
-
-    }, {
-        id: 'tokendecode',
-        name: 'JTW',
-        icon: 'https://jwt.io/img/icon.svg\n',
-        category: 'others',
-        url: 'https://jwt.io/',
-        order: 1,
-        searchAble: false,
-
-    },
-
-//         https://irp-nonprod-os.hkexpress.com/_dashboards/app/data-explorer/discover#?
-//     _a=(discover:(columns:!(structured.message,structured.level,structured.request_url,structured.request_body),isDirty:!t,sort:!()),
-//     metadata:(indexPattern:'1ddac3d0-29f4-11ef-8292-e1b84fc6127c',view:discover))
-// &_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-1w,to:now))&_q=(filters:!(),query:(language:kuery,query:''))
-        {
-            id: 'searchbytraceId',
-            name: 'search by trace Id',
-            category: 'opensearch',
-            showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body),isDirty:!t,sort:!()),',
-            queryParam: '&_q=(filters:!(),query:(language:kuery,query:\'$1\'))',
-            order: 1,
-            searchAble: true,
-            usedFilter: false,
-            placeholder: 'please enter trace Id'
-        }, {
-            id: 'searchlogbyorderId',
-            name: 'search by orderId',
-            category: 'opensearch',
-            showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body),isDirty:!t,sort:!()),',
-            queryParam: '&_q=(filters:!(),query:(language:kuery,query:\'$1\'))',
-            order: 1,
-            searchAble: true,
-            usedFilter: false,
-            placeholder: 'please enter order Id'
-        }, {
-            id: 'searchjimupayment',
-            name: 'search recent jimu api call',
-            category: 'opensearch',
-            order: 1,
-            searchAble: false,
-            usedFilter: true,
-            showColumn: '_a=(discover:(columns:!(structured.message,structured.level,structured.request_url,structured.request_body),isDirty:!t,sort:!()),',
-            queryParam: 'key:structured.request_url,negate:!f,params:(query:\'https:%2F%2Fapistores.jimutour.com%2Fapiworks%2Fpay%2Fscanqrcode%2Fgateway\'),type:phrase),query:(match_phrase:(structured.request_url:\'https:%2F%2Fapistores.jimutour.com%2Fapiworks%2Fpay%2Fscanqrcode%2Fgateway\')))),query:(language:kuery,query:\'\'))',
-            placeholder: '输入搜索关键词'
-        },
-
-        {
-            id: 'searchrecentcreatepaymentapicall',
-            name: 'search recent create payment api call',
-            category: 'opensearch',
-            showColumn: '_a=(discover:(columns:!(structured.message,structured.request_url,structured.request_body,structured.logging_http_request_header.nsk_token,structured.traceId),isDirty:!t,sort:!()),',
-            queryParam: 'key:structured.request_url,negate:!f,params:(query:%2Fexternal%2Fv1%2Fpayment%2Fcreate-payment),type:phrase),query:(match_phrase:(structured.request_url:%2Fexternal%2Fv1%2Fpayment%2Fcreate-payment)))),query:(language:kuery,query:\'\'))',
-            order: 1,
-            searchAble: false,
-            usedFilter: true,
-            placeholder: '输入搜索关键词'
-        }, {
-            id: 'searchadminportallog',
-            name: 'search recent admin portal log',
-            category: 'opensearch',
-            showColumn: '_a=(discover:(columns:!(structured.username,structured.request_method,structured.method_name,structured.request_body),isDirty:!t,sort:!()),',
-            queryParam: 'key:structured.request_url,negate:!f,params:(query:%2Fexternal%2Fv1%2Fpayment%2Fcreate-payment),type:phrase),query:(match_phrase:(structured.request_url:%2Fexternal%2Fv1%2Fpayment%2Fcreate-payment)))),query:(language:kuery,query:\'\'))',
-            order: 1,
-            searchAble: false,
-            usedFilter: true,
-            placeholder: '输入搜索关键词'
-        },
-        {
-            id: 'searchlongpollingapilog',
-            name: 'search long polling api log',
-            category: 'opensearch',
-            showColumn: '_a=(discover:(columns:!(structured.message,structured.request_url,structured.request_body,structured.response_body),isDirty:!t,sort:!()),',
-            queryParam: 'key:structured.request_url,negate:!f,params:(query:\'http:%2F%2Firp-dev-api.hkexpress.com%2Fv1%2Forder%2F$1%2Fpolling-status\'),type:phrase),query:(match_phrase:(structured.request_url:\'http:%2F%2Firp-dev-api.hkexpress.com%2Fv1%2Forder%2F$1%2Fpolling-status\')))),query:(language:kuery,query:\'\'))',
-            order: 1,
-            searchAble: true,
-            usedFilter: true,
-            placeholder: 'please enter order Id'
-        },
-
-
-    ];
     loadEnvironment()
     loadTimeSelector()
-    initEnvironment(currentEnv)
-    initTimeSelector(currentTime)
+
     if (currentCategory !== 'opensearch') {
         timeSwitcherContainer.classList.add('hidden');
     }
@@ -690,7 +705,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     rowElement2.className = 'layout-table site-container';
                     rowElement2.innerHTML = `
                     <button class="site-button svc-base"  data-site-id="${site.id}">
-                        <img width="15px" height="15px" src="https://www.redhat.com/favicon.ico"></img>
+                        <img width="15px" height="15px" src="icons/redhat.ico"></img>
                         <span>RedHat</span>
                     </button>
                 `;
@@ -705,7 +720,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     rowElement3.className = 'layout-table site-container';
                     rowElement3.innerHTML = `
                     <button class="site-button svc-base"  data-site-id="${site.id}">
-                        <img width="15px" height="15px" src="https://openshift-gitops-server-openshift-gitops.apps.hkerosa-nonprod.o5ys.p1.openshiftapps.com/assets/favicon/favicon-32x32.png"></img>
+                        <img width="15px" height="15px" src="icons/argo.png"></img>
                         <span>Argo</span>
                     </button>
                 `;
