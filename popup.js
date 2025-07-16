@@ -11,10 +11,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const currentEnvSpan = document.getElementById('currentEnv');
     const currentTimeSpan = document.getElementById('currentTimeSelector');
     const timeSwitcherContainer = document.getElementById('timeSwitcherContainer');
-    const footerEnv = document.getElementById('footerEnv');
+    // const footerEnv = document.getElementById('footerEnv');
     const tabButtons = document.querySelectorAll('.tab-btn');
-
-
+    const clearSearch = document.getElementById('clearSearch');
+    const CACHE_EXPIRATION_MINUTES = 10;
     // 预定义网站配置（支持多环境）
     const sites = [{
         id: 'hkexpress',
@@ -113,7 +113,11 @@ document.addEventListener('DOMContentLoaded', function () {
         category: 'server',
         repositoryName: 'hkexpress-order-svc',
         project: {
-            dev: 'ibe-pci-dev', uat: 'ibe-pci-uat', prod: 'ibe-pci-uat', nextdev: 'ibe-pci-next-dev', nextuat: 'ibe-pci-next-uat',
+            dev: 'ibe-pci-dev',
+            uat: 'ibe-pci-uat',
+            prod: 'ibe-pci-uat',
+            nextdev: 'ibe-pci-next-dev',
+            nextuat: 'ibe-pci-next-uat',
         },
         order: 1,
         haveApi: true,
@@ -173,7 +177,11 @@ document.addEventListener('DOMContentLoaded', function () {
         repositoryName: 'hkexpress-payment-svc',
         packagesId: '2167420',
         project: {
-            dev: 'ibe-dev', uat: 'ibe-pci-uat', prod: 'ibe-pci-uat', nextdev: 'ibe-pci-next-dev', nextuat: 'ibe-pci-next-uat',
+            dev: 'ibe-dev',
+            uat: 'ibe-pci-uat',
+            prod: 'ibe-pci-uat',
+            nextdev: 'ibe-pci-next-dev',
+            nextuat: 'ibe-pci-next-uat',
         },
         order: 1,
         haveApi: true,
@@ -188,7 +196,11 @@ document.addEventListener('DOMContentLoaded', function () {
         repositoryName: 'hkexpress-admin-svc',
         packagesId: '2146705',
         project: {
-            dev: 'ibe-pci-dev', uat: 'ibe-pci-uat', prod: 'ibe-pci-uat', nextdev: 'ibe-pci-next-dev', nextuat: 'ibe-pci-next-uat',
+            dev: 'ibe-pci-dev',
+            uat: 'ibe-pci-uat',
+            prod: 'ibe-pci-uat',
+            nextdev: 'ibe-pci-next-dev',
+            nextuat: 'ibe-pci-next-uat',
         },
         order: 1,
         haveApi: true,
@@ -476,6 +488,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let currentEnv = 'dev';
     let currentTime = 'd1';
+    let currentSearchWord = '';
     let currentCategory = 'hkexpress';
     let allSites = [];
     let filteredSites = [];
@@ -488,7 +501,6 @@ document.addEventListener('DOMContentLoaded', function () {
         h1: '1 Hour', d1: '1 Day', w1: '1 Week', m1: '1 Month'
     };
 
-    // 环境切换器事件
     envButton.addEventListener('click', function (e) {
         e.stopPropagation();
         envDropdown.classList.toggle('show');
@@ -499,7 +511,6 @@ document.addEventListener('DOMContentLoaded', function () {
         timeDropdown.classList.toggle('show');
     });
 
-    // 点击环境选项
     envDropdown.addEventListener('click', function (e) {
         e.preventDefault();
         if (e.target.tagName === 'A') {
@@ -518,14 +529,20 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // 点击页面其他地方关闭环境下拉菜单
+    clearSearch.addEventListener('click', function () {
+        searchInput.value = '';
+        setSearchWord('');
+        filterSites('');
+        // 隐藏清除按钮
+        clearSearch.classList.add('hidden');
+    });
+
     document.addEventListener('click', function (e) {
         if (!envButton.contains(e.target)) {
             envDropdown.classList.remove('show');
         }
     });
 
-    // 分页标签事件
     tabButtons.forEach(button => {
         button.addEventListener('click', function () {
             // 移除所有按钮的active类
@@ -539,40 +556,12 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 timeSwitcherContainer.classList.add('hidden');
             }
+            setSelectedTab(currentCategory);
             // 重新渲染网站列表
-            cleanFilter();
-            filterSites();
+            filterSites(currentSearchWord)
         });
     });
 
-    // 设置环境
-    function initEnvironment(env) {
-        currentEnvSpan.textContent = envNames[env];
-        footerEnv.textContent = envNames[env];
-    }
-
-    function initTimeSelector(time) {
-        currentTimeSpan.textContent = timeNames[time];
-    }
-
-    function setEnvironment(env) {
-        currentEnv = env;
-        currentEnvSpan.textContent = envNames[env];
-        footerEnv.textContent = envNames[env];
-        saveEnvironment(env)
-        filterSites();
-    }
-
-    function setTimeSelector(time) {
-        currentTime = time;
-        currentTimeSpan.textContent = timeNames[time];
-        saveTimeSelector(time)
-        filterSites();
-    }
-
-    function saveEnvironment(env) {
-        localStorage.setItem('selectedEnv', env);
-    }
 
     const opensearch = {
         baseUrl: {
@@ -614,46 +603,200 @@ document.addEventListener('DOMContentLoaded', function () {
         url2: '/pods/',
     }
 
+
+    function setSearchWord(word) {
+        currentSearchWord = word;
+        const data = {
+            value: word,
+            timestamp: new Date().getTime()
+        };
+        localStorage.setItem('searchWord', JSON.stringify(data));
+    }
+
+    function setSelectedTab(tab) {
+        const data = {
+            value: tab,
+            timestamp: new Date().getTime()
+        };
+        localStorage.setItem('selectedTab', JSON.stringify(data));
+    }
+
+    function setEnvironment(env) {
+        currentEnv = env;
+        currentEnvSpan.textContent = envNames[env];
+        const data = {
+            value: env,
+            timestamp: new Date().getTime()
+        };
+        localStorage.setItem('selectedEnv', JSON.stringify(data));
+        filterSites(currentSearchWord);
+    }
+
+    function setTimeSelector(time) {
+        currentTime = time;
+        currentTimeSpan.textContent = timeNames[time];
+        const data = {
+            value: time,
+            timestamp: new Date().getTime()
+        };
+        localStorage.setItem('selectedTime', JSON.stringify(data));
+        filterSites(currentSearchWord);
+    }
+
     function loadEnvironment() {
-        const savedEnv = localStorage.getItem('selectedEnv');
-        if (savedEnv && envNames[savedEnv]) {
-            currentEnv = savedEnv;
-            initEnvironment(currentEnv)
+        const savedData = localStorage.getItem('selectedEnv');
+        if (!savedData){
+            currentEnvSpan.textContent = envNames[currentEnv];
+            return;
         }
+        try {
+            const data = JSON.parse(savedData);
+            const currentTime = new Date().getTime();
+            const timeDiff = currentTime - data.timestamp;
+            const minutesDiff = Math.floor(timeDiff / (1000 * 60));
+
+            // 检查是否在有效期内
+            if (minutesDiff < CACHE_EXPIRATION_MINUTES) {
+                if (data.value && envNames[data.value]) {
+                    currentEnv = data.value;
+                    currentEnvSpan.textContent = envNames[currentEnv];
+                    return;
+                }
+            }
+        } catch (e) {
+            console.error('Error parsing saved data:', e);
+        }
+        localStorage.removeItem('selectedEnv');
+        currentEnvSpan.textContent = envNames[currentEnv];
+
+    }
+
+    function loadSelectedTab() {
+        const savedData = localStorage.getItem('selectedTab');
+        if (!savedData) {
+            tabButtons.forEach(button => {
+                if (button.getAttribute('data-category') === currentCategory) {
+                    button.classList.add('active');
+                }
+            });
+            return;
+        }
+        try {
+            const data = JSON.parse(savedData);
+            const currentTime = new Date().getTime();
+            const timeDiff = currentTime - data.timestamp;
+            const minutesDiff = Math.floor(timeDiff / (1000 * 60));
+
+            // 检查是否在有效期内
+            if (minutesDiff < CACHE_EXPIRATION_MINUTES) {
+                if (data.value) {
+                    currentCategory = data.value
+                    tabButtons.forEach(button => {
+                        if (button.getAttribute('data-category') === currentCategory) {
+                            button.classList.add('active');
+                        }
+                    });
+                    return;
+                }
+            }
+        } catch (e) {
+            console.error('Error parsing saved data:', e);
+        }
+        localStorage.removeItem('selectedTab');
+        tabButtons.forEach(button => {
+            if (button.getAttribute('data-category') === currentCategory) {
+                button.classList.add('active');
+            }
+        });
+    }
+
+
+    function loadSearchWord() {
+        const savedData = localStorage.getItem('searchWord');
+        if (!savedData) {
+            searchInput.value = currentSearchWord
+            clearSearch.classList.add('hidden');
+            return;
+        }
+        try {
+            const data = JSON.parse(savedData);
+            const currentTime = new Date().getTime();
+            const timeDiff = currentTime - data.timestamp;
+            const minutesDiff = Math.floor(timeDiff / (1000 * 60));
+
+            // 检查是否在有效期内
+            if (minutesDiff < CACHE_EXPIRATION_MINUTES) {
+                if (data.value) {
+                    currentSearchWord = data.value;
+                    searchInput.value = data.value
+
+                    if (currentSearchWord) {
+                        clearSearch.classList.remove('hidden');
+                    } else {
+                        clearSearch.classList.add('hidden');
+                    }
+                    return;
+                }
+            }
+        } catch (e) {
+            console.error('Error parsing saved data:', e);
+        }
+        localStorage.removeItem('searchWord');
+
+        searchInput.value = currentSearchWord
+        clearSearch.classList.add('hidden');
 
     }
 
     function loadTimeSelector() {
-        const savedTimeSelector = localStorage.getItem('selectedTime');
-        if (savedTimeSelector && timeNames[savedTimeSelector]) {
-            currentTime = savedTimeSelector;
-            initTimeSelector(currentTime)
+        const savedData = localStorage.getItem('selectedTime');
+        if (!savedData){
+            currentTimeSpan.textContent = timeNames[currentTime];
+            return;
         }
+        try {
+            const data = JSON.parse(savedData);
+            const tempCurrentTime = new Date().getTime();
+            const timeDiff = tempCurrentTime - data.timestamp;
+            const minutesDiff = Math.floor(timeDiff / (1000 * 60));
 
+            // 检查是否在有效期内
+            if (minutesDiff < CACHE_EXPIRATION_MINUTES) {
+                if (data.value && timeNames[data.value]) {
+                    currentTime = data.value;
+                    currentTimeSpan.textContent = timeNames[currentTime];
+                    return;
+                }
+            }
+        } catch (e) {
+            console.error('Error parsing saved data:', e);
+        }
+        localStorage.removeItem('selectedTime');
+        currentTimeSpan.textContent = timeNames[currentTime];
     }
 
-    function saveEnvironment(env) {
-        localStorage.setItem('selectedEnv', env);
-    }
-
-    function saveTimeSelector(time) {
-        localStorage.setItem('selectedTime', time);
-    }
-
+    loadSelectedTab()
+    loadSearchWord()
     loadEnvironment()
     loadTimeSelector()
 
-    if (currentCategory !== 'opensearch') {
-        timeSwitcherContainer.classList.add('hidden');
-    }
-    // 初始化 - 设置默认环境
+
     allSites = sites;
     filteredSites = sites.filter(site => site.category === currentCategory);
+    filterSites(currentSearchWord)
     renderSites(filteredSites);
 
     // 搜索功能
     searchInput.addEventListener('input', function () {
         const searchTerm = this.value.toLowerCase().trim();
+        setSearchWord(searchTerm)
+
+        if (searchTerm) {
+            clearSearch.classList.remove('hidden');
+        } else {
+            clearSearch.classList.add('hidden');
+        }
+
         filterSites(searchTerm);
     });
 
@@ -672,10 +815,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function cleanFilter() {
-        searchInput.value = '';
+        // searchInput.value = '';
     }
 
     function renderSites(sitesToRender) {
+
+        if (currentCategory.toString() === 'opensearch') {
+            timeSwitcherContainer.classList.remove('hidden');
+        }
+
         // 清空容器
         sitesContainer.innerHTML = '';
 
@@ -987,7 +1135,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (site.searchAble === true) {
             queryParam = queryParam.replaceAll('$1', param)
         }
-        console.log(queryParam)
 
         const fullUrl = baseUrl + showColumn + index + time + filterIndex + queryParam;
 
