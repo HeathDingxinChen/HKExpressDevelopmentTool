@@ -656,12 +656,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const minutesDiff = Math.floor(timeDiff / (1000 * 60));
 
             // 检查是否在有效期内
-            if (minutesDiff < CACHE_EXPIRATION_MINUTES) {
-                if (data.value && envNames[data.value]) {
-                    currentEnv = data.value;
-                    currentEnvSpan.textContent = envNames[currentEnv];
-                    return;
-                }
+            if (data.value && envNames[data.value]) {
+                currentEnv = data.value;
+                currentEnvSpan.textContent = envNames[currentEnv];
+                return;
             }
         } catch (e) {
             console.error('Error parsing saved data:', e);
