@@ -326,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (site.category == 'server') {
                 const rowElement1 = document.createElement('div');
-                rowElement1.className = 'github-svc-div';
+                rowElement1.className = '.github-svc-div';
                 rowElement1.innerHTML = `
                         <p class="github-svc-name"> <span><i class="fa-solid fa-server"></i></span> ${site.name}</p>
                 `;
@@ -472,7 +472,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (site.category == 'opensearch') {
                 const rowElement1 = document.createElement('div');
-                rowElement1.className = 'github-svc-div';
+                rowElement1.className = '.github-svc-div';
                 rowElement1.innerHTML = `
                         <p class="github-svc-name"> <span><i class="fas fa-search"></i></i></span> ${site.name}</p>
                 `;
