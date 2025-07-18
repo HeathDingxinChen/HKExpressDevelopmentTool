@@ -1,3 +1,16 @@
+const iconModules = import.meta.glob(
+    '@/assets/icons/*.{svg,png,jpg,ico}',
+    { eager: true }
+);
+
+// 生成图标名称到URL的映射
+export const icons = {};
+for (const path in iconModules) {
+
+    console.log(path)
+    const fileName = path.split('/').pop().split('.')[0];
+    icons[fileName] = iconModules[path].default;
+}
 
 export const openSearchUrl = {
     baseUrl: {
@@ -38,10 +51,17 @@ export const redhatUrl = {
     url1: '/deployments/',
     url2: '/pods/',
 }
+
+export const envNames = {
+    prod: 'PROD ENV', uat: 'UAT ENV', dev: 'DEV ENV', nextdev: 'NEXT DEV ENV', nextuat: 'NEXT UAT ENV'
+};
+export const timeNames = {
+    h1: '1 Hour', d1: '1 Day', w1: '1 Week', m1: '1 Month'
+};
 export const sites = [{
     id: 'hkexpress',
     name: 'HKExpress',
-    icon: 'icons/hke_little.ico',
+    icon: icons.hke_little,
     category: 'hkexpress',
     baseUrl: {
         prod: 'https://mybooking.hkexpress.com/en',
@@ -56,7 +76,7 @@ export const sites = [{
 }, {
     id: 'fullasia',
     name: 'AMPortal',
-    icon: 'icons/hke_little.ico',
+    icon: icons.hke_little,
     category: 'hkexpress',
     baseUrl: {
         prod: 'https://mybooking.hkexpress.com/en-HK/full-miles-redemption/login',
@@ -71,7 +91,7 @@ export const sites = [{
 }, {
     id: 'adminportal',
     name: 'AdminPortal',
-    icon: 'icons/hke_little.ico',
+    icon: icons.hke_little,
     category: 'hkexpress',
     baseUrl: {
         prod: 'https://admin.hkexpress.com/dashboard',
@@ -86,7 +106,7 @@ export const sites = [{
 }, {
     id: 'b2bhkexpress',
     name: 'B2B',
-    icon: 'icons/hke_little.ico',
+    icon: icons.hke_little,
     category: 'hkexpress',
     baseUrl: {
         prod: 'https://mybooking.hkexpress.com/en/b2b/login',
@@ -101,7 +121,7 @@ export const sites = [{
 }, {
     id: 'sitecore',
     name: 'Sitecore',
-    icon: 'icons/sitecore.ico',
+    icon: icons.sitecore,
     category: 'hkexpress',
     baseUrl: {
         prod: 'https://api.hkexpress.com/public/v1/content-management/list?lang=en&application_code=ALL&channel=app',
@@ -116,7 +136,7 @@ export const sites = [{
 }, {
     id: 'githubquery',
     name: 'Query Service',
-    icon: 'icons/github.svg',
+    icon: icons.github,
     category: 'server',
     repositoryName: 'hkexpress-flt-booking-query-svc',
     packagesId: '2167397',
@@ -131,7 +151,7 @@ export const sites = [{
 }, {
     id: 'githuborder',
     name: 'Order Service',
-    icon: 'icons/github.svg',
+    icon: icons.github,
     category: 'server',
     repositoryName: 'hkexpress-order-svc',
     project: {
@@ -149,7 +169,7 @@ export const sites = [{
 }, {
     id: 'githubmgmt',
     name: 'Mgmt Service',
-    icon: 'icons/github.svg',
+    icon: icons.github,
     category: 'server',
     repositoryName: 'hkexpress-flt-booking-mgmt-svc',
     packagesId: '2167465',
@@ -164,7 +184,7 @@ export const sites = [{
 }, {
     id: 'githubauth',
     name: 'Auth Service',
-    icon: 'icons/github.svg',
+    icon: icons.github,
     category: 'server',
     repositoryName: 'hkexpress-auth-svc',
     packagesId: '2167512',
@@ -179,7 +199,7 @@ export const sites = [{
 }, {
     id: 'githubnotification',
     name: 'Notication Service',
-    icon: 'icons/github.svg',
+    icon: icons.github,
     category: 'server',
     repositoryName: 'hkexpress-notification-svc',
     packagesId: '2164074',
@@ -194,7 +214,7 @@ export const sites = [{
 }, {
     id: 'githubpayment',
     name: 'Payment Service',
-    icon: 'icons/github.svg',
+    icon: icons.github,
     category: 'server',
     repositoryName: 'hkexpress-payment-svc',
     packagesId: '2167420',
@@ -213,7 +233,7 @@ export const sites = [{
 }, {
     id: 'githubadmin',
     name: 'Admint Service',
-    icon: 'icons/github.svg',
+    icon: icons.github,
     category: 'server',
     repositoryName: 'hkexpress-admin-svc',
     packagesId: '2146705',
@@ -232,7 +252,7 @@ export const sites = [{
 }, {
     id: 'githubmember',
     name: 'Member Service',
-    icon: 'icons/github.svg',
+    icon: icons.github,
     category: 'server',
     repositoryName: 'hkexpress-member-svc',
     packagesId: '2167453',
@@ -247,7 +267,7 @@ export const sites = [{
 }, {
     id: 'githubnonpssint',
     name: 'Non pss int Service',
-    icon: 'icons/github.svg',
+    icon: icons.github,
     category: 'server',
     repositoryName: 'hkexpress-non-pss-int-svc',
     packagesId: '2167571',
@@ -262,7 +282,7 @@ export const sites = [{
 }, {
     id: 'githubnsklib',
     name: 'Nsk Lib',
-    icon: 'icons/github.svg',
+    icon: icons.github,
     category: 'server',
     repositoryName: 'hkexpress-nsk-api',
     packagesId: '2170232',
@@ -274,7 +294,7 @@ export const sites = [{
 }, {
     id: 'githubbaselib',
     name: 'Base Lib',
-    icon: 'icons/github.svg',
+    icon: icons.github,
     category: 'server',
     repositoryName: 'hkexpress-base-lib',
     packagesId: '2146780',
@@ -286,7 +306,7 @@ export const sites = [{
 }, {
     id: 'githubdevopsscript',
     name: 'Devops script',
-    icon: 'icons/github.svg',
+    icon: icons.github,
     category: 'server',
     repositoryName: 'hkexpress-devops-script',
     order: 1,
@@ -297,7 +317,7 @@ export const sites = [{
 }, {
     id: 'githubfrontend',
     name: 'Front end',
-    icon: 'icons/github.svg',
+    icon: icons.github,
     category: 'server',
     repositoryName: 'hkexpress-frontend-monorepo',
     project: {
@@ -311,7 +331,7 @@ export const sites = [{
 }, {
     id: 'githubadminportal',
     name: 'Admin portal',
-    icon: 'icons/github.svg',
+    icon: icons.github,
     category: 'server',
     repositoryName: 'hkexpress-admin-portal',
     project: {
@@ -325,7 +345,7 @@ export const sites = [{
 }, {
     id: 'githubnativemobile',
     name: 'Native Mobile',
-    icon: 'icons/github.svg',
+    icon: icons.github,
     category: 'server',
     repositoryName: 'hkexpress-react-native-mobile',
     order: 1,
@@ -336,16 +356,16 @@ export const sites = [{
 }, {
     id: 'jira',
     name: 'Jira',
-    icon: 'icons/jira.ico',
+    icon: icons.jira,
     category: 'others',
-    url: 'icons/jira.ico',
+    url: icons.jira,
     order: 1,
     searchAble: false,
 
 }, {
     id: 'sendgrid',
     name: 'Sendgrid',
-    icon: 'icons/sendgrid.ico',
+    icon: icons.sendgrid,
     category: 'others',
     url: 'https://app.sendgrid.com/',
     order: 1,
@@ -354,7 +374,7 @@ export const sites = [{
 }, {
     id: 'cognito',
     name: 'Cognito',
-    icon: 'icons/cognito.ico',
+    icon: icons.cognito,
     category: 'others',
     url: 'https://730335598856.signin.aws.amazon.com/console',
     order: 1,
@@ -363,7 +383,7 @@ export const sites = [{
 }, {
     id: 'trueuptimesheet',
     name: 'TimeSheet',
-    icon: 'icons/excel.svg',
+    icon: icons.excel,
     category: 'others',
     url: 'https://ts.accenture.com/:x:/r/sites/HKEAMS/_layouts/15/doc2.aspx?sourcedoc=%7B3CB24B6B-AA0D-42F5-AB5C-585EEC1BF713%7D&file=HKE%20AMS%20-%20Schedule%20Plan.xlsx&action=default&mobileredirect=true%20Sign%20in%20to%20your%20account',
     order: 1,
@@ -372,7 +392,7 @@ export const sites = [{
 }, {
     id: 'figma',
     name: 'Figma',
-    icon: 'icons/figma.svg',
+    icon: icons.figma,
     category: 'others',
     url: 'https://www.figma.com/file/XvxmcGKZMaaYAjqqExhT3b/HKE-Collaborate?fuid=1390530896643064924',
     order: 1,
@@ -381,7 +401,7 @@ export const sites = [{
 }, {
     id: 'nskswagger',
     name: 'NskSwagger',
-    icon: 'icons/swagger.svg',
+    icon: icons.swagger,
     category: 'others',
     url: 'https://dotrezapir4x-akm.test.uo.navitaire.com/swagger/index.html#/token/nsk_v1_token_post',
     order: 1,
@@ -390,7 +410,7 @@ export const sites = [{
 }, {
     id: 'k6',
     name: 'K6',
-    icon: 'icons/k6.ico',
+    icon: icons.k6,
     category: 'others',
     url: 'https://app.k6.io/account/login',
     order: 1,
@@ -399,7 +419,7 @@ export const sites = [{
 }, {
     id: 'jimu',
     name: 'Jimu',
-    icon: 'icons/jimu.ico',
+    icon: icons.jimu,
     category: 'others',
     url: 'https://jimutour.com/submitlogin.do',
     order: 1,
@@ -408,7 +428,7 @@ export const sites = [{
 }, {
     id: 'regextest',
     name: 'Regex',
-    icon: 'icons/regex.ico',
+    icon: icons.regex,
     category: 'others',
     url: 'https://www.jyshare.com/front-end/854/',
     order: 1,
@@ -417,7 +437,7 @@ export const sites = [{
 }, {
     id: 'tokendecode',
     name: 'JTW',
-    icon: 'icons/jwt.svg',
+    icon: icons.jwt,
     category: 'others',
     url: 'https://jwt.io/',
     order: 1,

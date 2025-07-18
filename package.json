@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "dev": "vite build --watch --mode development",
+    "build": "vite build --mode production",
+    "serve": "vite preview"
+  },
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^2.0.0-beta.33",
+    "@types/node": "^24.0.14",
+    "vite-plugin-chrome-extension": "^0.0.7"
+  },
+  "dependencies": {
+    "vite": "^6.3.5"
+  }
+}
