@@ -8,14 +8,25 @@ jobs:
   build-and-package:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
       - name: Install dependencies
         run: npm install
+
       - name: Build project
         run: vite build --mode production
+
       - name: Create release asset
         run: |
           mkdir -p release
-          zip -r release/HKExpressDevelopmentTool.zip dist/ # 打包 dist 目录
+          zip -r release/HKExpressDevelopmentTool.zip dist/
+
       - name: Upload release asset
         uses: softprops/action-gh-release@v1
         with:
