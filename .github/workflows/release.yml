@@ -27,7 +27,8 @@ jobs:
       - name: Create release asset
         run: |
           mkdir -p release
-          zip -r release/HKExpressDevelopmentTool.zip dist/
+          mv dist HKExpressDevelopmentTool
+          zip -r release/HKExpressDevelopmentTool.zip HKExpressDevelopmentTool/
 
       - name: Upload release asset
         uses: actions/upload-release-asset@v1
