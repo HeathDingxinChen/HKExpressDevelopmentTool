@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let allSites = [];
     let filteredSites = [];
 
+
     envButton.addEventListener('click', function (e) {
         e.stopPropagation();
         envDropdown.classList.toggle('show');

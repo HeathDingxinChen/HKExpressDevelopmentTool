@@ -3,11 +3,8 @@ const iconModules = import.meta.glob(
     { eager: true }
 );
 
-// 生成图标名称到URL的映射
 export const icons = {};
 for (const path in iconModules) {
-
-    console.log(path)
     const fileName = path.split('/').pop().split('.')[0];
     icons[fileName] = iconModules[path].default;
 }
