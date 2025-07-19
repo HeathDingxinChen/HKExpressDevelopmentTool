@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // const footerEnv = document.getElementById('footerEnv');
     const tabButtons = document.querySelectorAll('.tab-btn');
     const clearSearch = document.getElementById('clearSearch');
+    const githubRepoFoot = document.getElementById('github-repo-foot');
     const CACHE_EXPIRATION_MINUTES = 10;
 
     let currentEnv = 'dev';
@@ -60,6 +61,10 @@ document.addEventListener('DOMContentLoaded', function () {
         filterSites('');
         // 隐藏清除按钮
         clearSearch.classList.add('hidden');
+    });
+
+    githubRepoFoot.addEventListener('click', function () {
+        chrome.tabs.create({url: "https://github.com/HeathDingxinChen/HKExpressDevelopmentTool"});
     });
 
     document.addEventListener('click', function (e) {
