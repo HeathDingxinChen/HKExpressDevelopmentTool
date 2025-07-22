@@ -10,7 +10,7 @@ for (const path in iconModules) {
 }
 
 export const openSearchUrl = {
-    baseUrl: {
+    env: {
         dev: 'https://irp-nonprod-os.hkexpress.com/_dashboards/app/data-explorer/discover#?',
         uat: 'https://irp-nonprod-os.hkexpress.com/_dashboards/app/data-explorer/discover#?',
         nextdev: 'https://irp-nonprod-os.hkexpress.com/_dashboards/app/data-explorer/discover#?',
@@ -60,7 +60,7 @@ export const sites = [{
     name: 'HKExpress',
     icon: icons.hke_little,
     category: 'hkexpress',
-    baseUrl: {
+    env: {
         prod: 'https://mybooking.hkexpress.com/en',
         uat: 'https://irp-uat-booking.hkexpress.com/en',
         dev: 'https://irp-dev-booking.hkexpress.com/en',
@@ -75,7 +75,7 @@ export const sites = [{
     name: 'AMPortal',
     icon: icons.hke_little,
     category: 'hkexpress',
-    baseUrl: {
+    env: {
         prod: 'https://mybooking.hkexpress.com/en-HK/full-miles-redemption/login',
         uat: 'https://irp-uat-booking.hkexpress.com/en/full-miles-redemption/login',
         dev: 'https://irp-dev-booking.hkexpress.com/en/full-miles-redemption/login',
@@ -90,7 +90,7 @@ export const sites = [{
     name: 'AdminPortal',
     icon: icons.hke_little,
     category: 'hkexpress',
-    baseUrl: {
+    env: {
         prod: 'https://admin.hkexpress.com/dashboard',
         uat: 'https://irp-uat-admin.hkexpress.com/',
         dev: 'https://irp-dev-admin.hkexpress.com/',
@@ -105,7 +105,7 @@ export const sites = [{
     name: 'B2B',
     icon: icons.hke_little,
     category: 'hkexpress',
-    baseUrl: {
+    env: {
         prod: 'https://mybooking.hkexpress.com/en/b2b/login',
         uat: 'https://irp-uat-booking.hkexpress.com/en/b2b/login',
         dev: 'https://irp-dev-booking.hkexpress.com/en/b2b/login',
@@ -120,7 +120,7 @@ export const sites = [{
     name: 'Sitecore',
     icon: icons.sitecore,
     category: 'hkexpress',
-    baseUrl: {
+    env: {
         prod: 'https://api.hkexpress.com/public/v1/content-management/list?lang=en&application_code=ALL&channel=app',
         uat: 'https://irp-uat-edge.hkexpress.com/i18n/en/web.json',
         dev: 'https://irp-dev-edge.hkexpress.com/i18n/en/web.json',
@@ -137,7 +137,7 @@ export const sites = [{
     category: 'server',
     repositoryName: 'hkexpress-flt-booking-query-svc',
     packagesId: '2167397',
-    project: {
+    env: {
         dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
     },
     order: 1,
@@ -151,7 +151,7 @@ export const sites = [{
     icon: icons.github,
     category: 'server',
     repositoryName: 'hkexpress-order-svc',
-    project: {
+    env: {
         dev: 'ibe-pci-dev',
         uat: 'ibe-pci-uat',
         prod: 'ibe-pci-uat',
@@ -170,7 +170,7 @@ export const sites = [{
     category: 'server',
     repositoryName: 'hkexpress-flt-booking-mgmt-svc',
     packagesId: '2167465',
-    project: {
+    env: {
         dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
     },
     order: 1,
@@ -185,7 +185,7 @@ export const sites = [{
     category: 'server',
     repositoryName: 'hkexpress-auth-svc',
     packagesId: '2167512',
-    project: {
+    env: {
         dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
     },
     order: 1,
@@ -200,7 +200,7 @@ export const sites = [{
     category: 'server',
     repositoryName: 'hkexpress-notification-svc',
     packagesId: '2164074',
-    project: {
+    env: {
         dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
     },
     order: 1,
@@ -215,7 +215,7 @@ export const sites = [{
     category: 'server',
     repositoryName: 'hkexpress-payment-svc',
     packagesId: '2167420',
-    project: {
+    env: {
         dev: 'ibe-pci-dev',
         uat: 'ibe-pci-uat',
         prod: 'ibe-pci-uat',
@@ -234,7 +234,7 @@ export const sites = [{
     category: 'server',
     repositoryName: 'hkexpress-admin-svc',
     packagesId: '2146705',
-    project: {
+    env: {
         dev: 'ibe-pci-dev',
         uat: 'ibe-pci-uat',
         prod: 'ibe-pci-uat',
@@ -253,7 +253,7 @@ export const sites = [{
     category: 'server',
     repositoryName: 'hkexpress-member-svc',
     packagesId: '2167453',
-    project: {
+    env: {
         dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
     },
     order: 1,
@@ -268,7 +268,7 @@ export const sites = [{
     category: 'server',
     repositoryName: 'hkexpress-non-pss-int-svc',
     packagesId: '2167571',
-    project: {
+    env: {
         dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
     },
     order: 1,
@@ -317,7 +317,7 @@ export const sites = [{
     icon: icons.github,
     category: 'server',
     repositoryName: 'hkexpress-frontend-monorepo',
-    project: {
+    env: {
         dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
     },
     order: 1,
@@ -331,7 +331,7 @@ export const sites = [{
     icon: icons.github,
     category: 'server',
     repositoryName: 'hkexpress-admin-portal',
-    project: {
+    env: {
         dev: 'ibe-dev', uat: 'ibe-uat', prod: 'ibe-uat', nextdev: 'ibe-next-dev', nextuat: 'ibe-next-uat',
     },
     order: 1,
@@ -457,11 +457,21 @@ export const sites = [{
         usedFilter: false,
         placeholder: 'please enter trace Id'
     }, {
-        id: 'searchlogbyorderId',
-        name: 'search by orderId',
+        id: 'searchcreatepaymentbyorderId',
+        name: 'search create payment by orderId',
         category: 'opensearch',
-        showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body),isDirty:!t,sort:!()),',
-        queryParam: '&_q=(filters:!(),query:(language:kuery,query:\'$1\'))',
+        showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body,structured.response_body),isDirty:!t,sort:!()),',
+        queryParam: '&_q=(filters:!((\'$state\':(store:appState),meta:(alias:!n,disabled:!f,index:f4f12330-b079-11ef-ad74-6d49bebb7247,key:structured.request_url,negate:!f,params:(query:\'http:%2F%2Fmanage.hkexpress.com%2Fexternal%2Fv1%2Fpayment%2Fcreate-payment\'),type:phrase),query:(match_phrase:(structured.request_url:\'v1%2Fpayment%2Fcreate-payment\')))),query:(language:kuery,query:\'$1\'))',
+        order: 1,
+        searchAble: true,
+        usedFilter: false,
+        placeholder: 'please enter order Id'
+    }, {
+        id: 'searchpnrbyorderId',
+        name: 'search PNR by orderId',
+        category: 'opensearch',
+        showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body,structured.response_body),isDirty:!t,sort:!()),',
+        queryParam: '&_q=(filters:!((\'$state\':(store:appState),meta:(alias:!n,disabled:!f,index:f4f12330-b079-11ef-ad74-6d49bebb7247,key:structured.request_url,negate:!f,params:(query:internal%2Fv1%2Fbooking),type:phrase),query:(match_phrase:(structured.request_url:internal%2Fv1%2Fbooking)))),query:(language:kuery,query:\'$1\'))',
         order: 1,
         searchAble: true,
         usedFilter: false,
@@ -521,6 +531,39 @@ export const sites = [{
         usedFilter: true,
         placeholder: 'please enter order Id'
     },
+    {
+        id: 'insurancepricinglog',
+        name: 'search insurance pricing log',
+        category: 'opensearch',
+        showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body),isDirty:!t,sort:!()),',
+        envQueryParam:{
+            dev: "key:structured.request_url,negate:!f,params:(query:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpricing'),type:phrase),query:(match_phrase:(structured.request_url:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpricing')))),query:(language:kuery,query:''))",
+            uat: "key:structured.request_url,negate:!f,params:(query:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpricing'),type:phrase),query:(match_phrase:(structured.request_url:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpricing')))),query:(language:kuery,query:''))",
+            prod: "key:structured.request_url,negate:!f,params:(query:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpricing'),type:phrase),query:(match_phrase:(structured.request_url:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpricing')))),query:(language:kuery,query:''))",
+            nextdev: "key:structured.request_url,negate:!f,params:(query:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpricing'),type:phrase),query:(match_phrase:(structured.request_url:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpricing')))),query:(language:kuery,query:''))",
+            nextuat: "key:structured.request_url,negate:!f,params:(query:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpricing'),type:phrase),query:(match_phrase:(structured.request_url:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpricing')))),query:(language:kuery,query:''))"
+        },
+        order: 1,
+        searchAble: false,
+        usedFilter: true,
+        placeholder: 'please enter order Id'
+    },
 
-
+    {
+        id: 'insurancepurchaselog',
+        name: 'search insurance purchase log',
+        category: 'opensearch',
+        showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body),isDirty:!t,sort:!()),',
+        envQueryParam:{
+            dev: "key:structured.request_url,negate:!f,params:(query:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpurchase'),type:phrase),query:(match_phrase:(structured.request_url:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpurchase')))),query:(language:kuery,query:''))",
+            uat: "key:structured.request_url,negate:!f,params:(query:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpurchase'),type:phrase),query:(match_phrase:(structured.request_url:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpurchase')))),query:(language:kuery,query:''))",
+            prod: "key:structured.request_url,negate:!f,params:(query:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpurchase'),type:phrase),query:(match_phrase:(structured.request_url:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpurchase')))),query:(language:kuery,query:''))",
+            nextdev: "key:structured.request_url,negate:!f,params:(query:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpurchase'),type:phrase),query:(match_phrase:(structured.request_url:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpurchase')))),query:(language:kuery,query:''))",
+            nextuat: "key:structured.request_url,negate:!f,params:(query:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpurchase'),type:phrase),query:(match_phrase:(structured.request_url:'https:%2F%2Fprod-eu.api.ancileo.com%2Fv1%2Ftravel%2Ffront%2Fpurchase')))),query:(language:kuery,query:''))",
+           },
+        order: 1,
+        searchAble: false,
+        usedFilter: true,
+        placeholder: 'please enter order Id'
+    },
 ];

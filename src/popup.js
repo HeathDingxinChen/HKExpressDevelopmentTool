@@ -546,10 +546,10 @@ document.addEventListener('DOMContentLoaded', function () {
         var fullUrl = ''
         switch (type) {
             case 'redhat':
-                fullUrl = redhatUrl.baseUrl + site.project[currentEnv] + redhatUrl.url1 + site.repositoryName + redhatUrl.url2
+                fullUrl = redhatUrl.baseUrl + site.env[currentEnv] + redhatUrl.url1 + site.repositoryName + redhatUrl.url2
                 break;
             case 'argo':
-                fullUrl = argoUrl.baseUrl + site.project[currentEnv] + argoUrl.url1
+                fullUrl = argoUrl.baseUrl + site.env[currentEnv] + argoUrl.url1
                 break;
             case 'apiversion':
                 fullUrl = githubUrl.baseUrl + site.repositoryName + githubUrl.apiVersionParam + site.packagesId
@@ -580,7 +580,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const site = sites.find(s => s.id === siteId);
         if (!site) return;
         // 获取当前环境的URL
-        const fullUrl = site.baseUrl[currentEnv];
+        const fullUrl = site.env[currentEnv];
         // 在实际Chrome扩展中，使用chrome.tabs.create打开网页
         if (typeof chrome !== 'undefined' && chrome.tabs) {
             chrome.tabs.create({url: fullUrl});
@@ -614,7 +614,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const param = site.searchAble ? inputElement.value.trim() : '';
 
         if (!site) return;
-        const baseUrl = openSearchUrl.baseUrl[currentEnv];
+        const baseUrl = openSearchUrl.env[currentEnv];
         const showColumn = site.showColumn;
         const index = openSearchUrl.indexParam.replace('$1', openSearchUrl.indexPattern[currentEnv])
         const time = openSearchUrl.timeSelector[currentTime]
@@ -624,10 +624,11 @@ document.addEventListener('DOMContentLoaded', function () {
             filterIndex = openSearchUrl.filterIndex.replace('$1', openSearchUrl.indexPattern[currentEnv])
         }
 
-        var queryParam = site.queryParam;
+        var queryParam = site.envQueryParam != null ? site.envQueryParam[currentEnv] :site.queryParam;
         if (site.searchAble === true) {
             queryParam = queryParam.replaceAll('$1', param)
         }
+
 
         const fullUrl = baseUrl + showColumn + index + time + filterIndex + queryParam;
 
