@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const time = e.target.getAttribute('data-env');
             setTimeSelector(time);
             timeDropdown.classList.remove('show');
-            showNotification(`已切换到 ${time} 查询范围`);
+            showNotification(`已切换到 ${timeNames[time]} 查询范围`);
         }
     });
 
