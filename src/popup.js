@@ -8,11 +8,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const notificationText = document.getElementById('notificationText');
     const envButton = document.getElementById('envButton');
     const timeButton = document.getElementById('timeButton');
+    const clearCookiesButton = document.getElementById('clearCookiesButton');
     const envDropdown = document.getElementById('envDropdown');
     const timeDropdown = document.getElementById('timeDropdown');
     const currentEnvSpan = document.getElementById('currentEnv');
     const currentTimeSpan = document.getElementById('currentTimeSelector');
     const timeSwitcherContainer = document.getElementById('timeSwitcherContainer');
+    const cookieCleanerContainer = document.getElementById('cookieCleanerContainer');
     // const footerEnv = document.getElementById('footerEnv');
     const tabButtons = document.querySelectorAll('.tab-btn');
     const clearSearch = document.getElementById('clearSearch');
@@ -37,12 +39,158 @@ document.addEventListener('DOMContentLoaded', function () {
         timeDropdown.classList.toggle('show');
     });
 
+    clearCookiesButton.addEventListener('click', function (e) {
+        showNotification('敬请期待！', true);
+        return;
+        if (typeof chrome === 'undefined' || !chrome.cookies) {
+            console.error('Chrome cookies API不可用');
+            showNotification('Cookies清理功能不可用，请检查扩展权限设置', true);
+            return;
+        }
+
+
+        const cookiesToClear = Object.values(sites.find(s => s.id === "hkexpress").env);
+
+        const objects = cookiesToClear.map(url => {
+            try {
+                return {
+                    domain: new URL(url).hostname
+                };
+            } catch (err) {
+                console.error('解析URL失败:', url, err);
+                return null;
+            }
+        }).filter(Boolean);
+
+        const allTabs = chrome.tabs.query({});
+
+        const [currentTab] = chrome.tabs.query({
+            active: true,
+            currentWindow: true
+        });
+
+        // 步骤3: 获取所有 Cookie 存储容器
+        const cookieStores = chrome.cookies.getAllCookieStores();
+
+        // 步骤4: 收集其他标签页的 storeId
+        const storeIdsToDelete = new Set();
+
+        for (const tab of allTabs) {
+            // 跳过当前标签页
+            if (tab.id === currentTab.id) continue;
+
+            // 查找标签页所属的 Cookie 存储容器
+            const store = cookieStores.find(s => s.tabIds.includes(tab.id));
+            if (store) {
+                storeIdsToDelete.add(store.id);
+            }
+        }
+
+        for (const storeId of storeIdsToDelete) {
+            // 获取该容器中的所有 cookies
+            const cookies = chrome.cookies.getAll({storeId});
+
+            // 删除每个 cookie
+            for (const cookie of cookies) {
+                const url = `http${cookie.secure ? 's' : ''}://${cookie.domain}${cookie.path}`;
+                try {
+                    // chrome.cookies.remove({
+                    //     url,
+                    //     name: cookie.name,
+                    //     storeId
+                    // });
+                    console.log(`Deleted: ${cookie.name} in store ${storeId}`);
+                } catch (error) {
+                    console.error(`Failed to delete ${cookie.name}:`, error);
+                }
+            }
+        }
+
+
+        chrome.cookies.getAllCookieStores(function (cookieStores) {
+            console.log('所有 Cookie Stores:', cookieStores);
+
+            // 获取hkexpress网站的所有环境URL
+            const siteUrls = Object.values(sites.find(s => s.id === "hkexpress").env);
+
+            // 从URL中提取域名
+            const targetDomains = siteUrls.map(url => {
+                try {
+                    return new URL(url).hostname;
+                } catch (err) {
+                    console.error('解析URL失败:', url, err);
+                    return null;
+                }
+            });
+
+            chrome.cookies.getAll({domain: "irp-uat-manage.hkexpress.com"}, function (cookies) {
+                console.log('cookies:', cookies)
+            })
+
+            objects.forEach(object => {
+                // 获取该域名下的所有cookies
+                chrome.cookies.getAll(object, function (cookies) {
+                    if (chrome.runtime.lastError) {
+                        console.error('获取cookies失败:', domain, chrome.runtime.lastError);
+                        processedDomains++;
+                        return;
+                    }
+                    console.log(`找到 ${cookies.length} 个cookies在域名 ${object} 下`);
+                    // if (cookies.length === 0) {
+                    //     processedDomains++;
+                    //     checkCompletion();
+                    //     return;
+                    // }
+
+                    let domainRemoved = 0;
+                    cookies.forEach(cookie => {
+                        chrome.cookies.remove({
+                            url: (cookie.secure ? "https://" : "http://") + cookie.domain.replace(/^\./, "") + cookie.path,
+                            name: cookie.name
+                        }, function (details) {
+                            if (details) {
+                                totalRemoved++;
+                                domainRemoved++;
+                            }
+
+                            if (chrome.runtime.lastError) {
+                                console.debug('删除cookie失败:', cookie.name, chrome.runtime.lastError);
+                            }
+
+                            // 检查是否完成了当前域名的所有cookies处理
+                            if (domainRemoved === cookies.length) {
+                                console.log(`已清除 ${domain} 下的 ${domainRemoved} 个cookies`);
+                                processedDomains++;
+                                checkCompletion();
+                            }
+                        });
+                    });
+
+                    // 辅助函数：检查是否完成所有处理
+                    function checkCompletion() {
+                        if (processedDomains === domains.length) {
+                            showNotification(`完成！共清除 ${totalRemoved} 个cookies`);
+                        }
+                    }
+                });
+            });
+
+            setTimeout(() => {
+                showNotification(`已尝试清除指定cookies`);
+            }, 1000);
+
+
+        });
+    });
+
     envDropdown.addEventListener('click', function (e) {
         e.preventDefault();
         if (e.target.tagName === 'A') {
             const env = e.target.getAttribute('data-env');
             setCurrentEnv(env);
             envDropdown.classList.remove('show');
+            let ENV = env.toUpperCase();
+            showNotification(`已切换到 ${ENV} ENV`);
         }
     });
 
@@ -52,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const time = e.target.getAttribute('data-env');
             setTimeSelector(time);
             timeDropdown.classList.remove('show');
+            showNotification(`已切换到 ${time} 查询范围`);
         }
     });
 
@@ -85,6 +234,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 timeSwitcherContainer.classList.remove('hidden');
             } else {
                 timeSwitcherContainer.classList.add('hidden');
+            }
+            if (currentCategory === 'hkexpress') {
+                cookieCleanerContainer.classList.remove('hidden');
+            } else {
+                cookieCleanerContainer.classList.add('hidden');
             }
             setSelectedTab(currentCategory);
             // 重新渲染网站列表
@@ -624,7 +778,7 @@ document.addEventListener('DOMContentLoaded', function () {
             filterIndex = openSearchUrl.filterIndex.replace('$1', openSearchUrl.indexPattern[currentEnv])
         }
 
-        var queryParam = site.envQueryParam != null ? site.envQueryParam[currentEnv] :site.queryParam;
+        var queryParam = site.envQueryParam != null ? site.envQueryParam[currentEnv] : site.queryParam;
         if (site.searchAble === true) {
             queryParam = queryParam.replaceAll('$1', param)
         }
@@ -650,6 +804,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         setTimeout(() => {
             notification.classList.remove('show');
-        }, 3000);
+        }, 1000);
     }
 });
