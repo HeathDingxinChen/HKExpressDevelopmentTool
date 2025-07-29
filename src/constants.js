@@ -382,7 +382,7 @@ export const sites = [{
     name: 'TimeSheet',
     icon: icons.excel,
     category: 'others',
-    url: 'https://ts.accenture.com/:x:/r/sites/HKEAMS/_layouts/15/doc2.aspx?sourcedoc=%7B3CB24B6B-AA0D-42F5-AB5C-585EEC1BF713%7D&file=HKE%20AMS%20-%20Schedule%20Plan.xlsx&action=default&mobileredirect=true%20Sign%20in%20to%20your%20account',
+    url: 'https://accenturechina.sharepoint.com/:x:/r/sites/HKExpressGroup/_layouts/15/Doc.aspx?sourcedoc=%7B65601378-7069-40DD-85DF-F928792665F4%7D&file=HKE%20AMS%20-%20Schedule%20Plan.xlsx&action=default&mobileredirect=true',
     order: 1,
     searchAble: false,
 
