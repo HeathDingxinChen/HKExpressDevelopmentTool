@@ -448,47 +448,47 @@ export const sites = [{
 // &_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-1w,to:now))&_q=(filters:!(),query:(language:kuery,query:''))
     {
         id: 'searchbytraceId',
-        name: 'search by trace Id',
+        name: 'Search By TraceId',
         category: 'opensearch',
         showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body),isDirty:!t,sort:!()),',
         queryParam: '&_q=(filters:!(),query:(language:kuery,query:\'$1\'))',
         order: 1,
         searchAble: true,
         usedFilter: false,
-        placeholder: 'please enter trace Id'
+        placeholder: 'Please Enter TraceId'
     }, {
         id: 'searchcreatepaymentbyorderId',
-        name: 'search create payment by orderId',
+        name: 'Search CreatePayment By OrderId',
         category: 'opensearch',
         showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body,structured.response_body,structured.traceId),isDirty:!t,sort:!()),',
         queryParam: 'key:structured.request_url,negate:!f,params:(query:\'v1%2Fpayment%2Fcreate-payment\'),type:phrase),query:(match_phrase:(structured.request_url:\'v1%2Fpayment%2Fcreate-payment\')))),query:(language:kuery,query:\'$1\'))',
         order: 1,
         searchAble: true,
         usedFilter: true,
-        placeholder: 'please enter order Id'
+        placeholder: 'Please Enter OrderId'
     }, {
         id: 'searchpnrbyorderId',
-        name: 'search PNR by orderId',
+        name: 'Search PNR By OrderId',
         category: 'opensearch',
         showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body,structured.response_body),isDirty:!t,sort:!()),',
         queryParam: 'key:structured.request_url,negate:!f,params:(query:internal%2Fv1%2Fbooking),type:phrase),query:(match_phrase:(structured.request_url:internal%2Fv1%2Fbooking)))),query:(language:kuery,query:\'$1\'))',
         order: 1,
         searchAble: true,
         usedFilter: true,
-        placeholder: 'please enter order Id'
+        placeholder: 'Please Enter OrderId'
     }, {
         id: 'searchdatabasechangebytxnid',
-        name: 'search database change by txn id',
+        name: 'Search DataBase Change By TxnId',
         category: 'opensearch',
         showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body,structured.response_body,structured.traceId,structured.method,structured.input_parameter),isDirty:!t,sort:!()),',
         queryParam: 'key:structured.input_parameter,negate:!f,params:(query:\'$1\'),type:phrase),query:(match_phrase:(structured.input_parameter:\'$1\')))),query:(language:kuery,query:\'\'))',
         order: 1,
         searchAble: true,
         usedFilter: true,
-        placeholder: 'please enter txn Id'
+        placeholder: 'Please Enter TxnId'
     },{
         id: 'searchjimupayment',
-        name: 'search recent jimu api call',
+        name: 'Search Recent Jimu Api Call',
         category: 'opensearch',
         order: 1,
         searchAble: false,
@@ -500,7 +500,7 @@ export const sites = [{
 
     {
         id: 'searchrecentcreatepaymentapicall',
-        name: 'search recent create payment api call',
+        name: 'Search Recent CreatePayment Api Call',
         category: 'opensearch',
         showColumn: '_a=(discover:(columns:!(structured.message,structured.request_url,structured.request_body,structured.logging_http_request_header.nsk_token,structured.traceId),isDirty:!t,sort:!()),',
         queryParam: 'key:structured.request_url,negate:!f,params:(query:%2Fexternal%2Fv1%2Fpayment%2Fcreate-payment),type:phrase),query:(match_phrase:(structured.request_url:%2Fexternal%2Fv1%2Fpayment%2Fcreate-payment)))),query:(language:kuery,query:\'\'))',
@@ -510,7 +510,7 @@ export const sites = [{
         placeholder: '输入搜索关键词'
     }, {
         id: 'searchadminportallog',
-        name: 'search recent admin portal log',
+        name: 'Search Recent AdminPortal Log',
         category: 'opensearch',
         showColumn: '_a=(discover:(columns:!(structured.username,structured.request_method,structured.method_name,structured.request_body),isDirty:!t,sort:!()),',
         queryParam: "key:structured.message,negate:!f,params:(query:'%5BAdmin%20Access%20Log%5D'),type:phrase),query:(match_phrase:(structured.message:'%5BAdmin%20Access%20Log%5D')))),query:(language:kuery,query:''))",
@@ -521,29 +521,29 @@ export const sites = [{
     },
     {
         id: 'searchbooingstatebypnr',
-        name: 'search booking state by pnr',
+        name: 'Search Booking State By PNR',
         category: 'opensearch',
         showColumn: '_a=(discover:(columns:!(structured.message,structured.request_url,structured.request_body,structured.response_body),isDirty:!t,sort:!()),',
         queryParam: "key:structured.request_url,negate:!f,params:(query:'   v1%2Fbooking%2Fretrieve%2FbyRecordLocator%2FO9WLVT'),type:phrase),query:(match_phrase:(structured.request_url:'v1%2Fbooking%2Fretrieve%2FbyRecordLocator%2F$1')))),query:(language:kuery,query:\'\'))",
         order: 1,
         searchAble: true,
         usedFilter: true,
-        placeholder: 'please enter pnr'
+        placeholder: 'Please Enter PNR'
     },
     {
         id: 'searchlongpollingapilog',
-        name: 'search long polling api log',
+        name: 'Search LongPolling Api Log',
         category: 'opensearch',
         showColumn: '_a=(discover:(columns:!(structured.message,structured.request_url,structured.request_body,structured.response_body),isDirty:!t,sort:!()),',
         queryParam: 'key:structured.request_url,negate:!f,params:(query:v1%2Forder%2F$1%2Fpolling-status),type:phrase),query:(match_phrase:(structured.request_url:\'v1%2Forder%2F$1%2Fpolling-status\')))),query:(language:kuery,query:\'\'))',
         order: 1,
         searchAble: true,
         usedFilter: true,
-        placeholder: 'please enter order Id'
+        placeholder: 'Please Enter OrderId'
     },
     {
         id: 'insurancepricinglog',
-        name: 'search insurance pricing log',
+        name: 'Search Insurance Pricing Log',
         category: 'opensearch',
         showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body),isDirty:!t,sort:!()),',
         queryParam: "key:structured.request_url,negate:!f,params:(query:'v1%2Ftravel%2Ffront%2Fpricing'),type:phrase),query:(match_phrase:(structured.request_url:'v1%2Ftravel%2Ffront%2Fpricing')))),query:(language:kuery,query:''))",
@@ -555,7 +555,7 @@ export const sites = [{
 
     {
         id: 'insurancepurchaselog',
-        name: 'search insurance purchase log',
+        name: 'Search Insurance Purchase Log',
         category: 'opensearch',
         showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body),isDirty:!t,sort:!()),',
         queryParam: "key:structured.request_url,negate:!f,params:(query:'v1%2Ftravel%2Ffront%2Fpurchase'),type:phrase),query:(match_phrase:(structured.request_url:'v1%2Ftravel%2Ffront%2Fpurchase')))),query:(language:kuery,query:''))",
