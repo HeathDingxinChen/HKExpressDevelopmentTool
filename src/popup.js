@@ -230,22 +230,26 @@ document.addEventListener('DOMContentLoaded', function () {
             this.classList.add('active');
             // 更新当前分类
             currentCategory = this.getAttribute('data-category');
-            if (currentCategory === 'opensearch') {
-                timeSwitcherContainer.classList.remove('hidden');
-            } else {
-                timeSwitcherContainer.classList.add('hidden');
-            }
-            if (currentCategory === 'hkexpress') {
-                cookieCleanerContainer.classList.remove('hidden');
-            } else {
-                cookieCleanerContainer.classList.add('hidden');
-            }
+            filterButton();
             setSelectedTab(currentCategory);
             // 重新渲染网站列表
             filterSites(currentSearchWord)
         });
     });
 
+
+    function filterButton() {
+        if (currentCategory === 'opensearch') {
+            timeSwitcherContainer.classList.remove('hidden');
+        } else {
+            timeSwitcherContainer.classList.add('hidden');
+        }
+        if (currentCategory === 'hkexpress') {
+            cookieCleanerContainer.classList.remove('hidden');
+        } else {
+            cookieCleanerContainer.classList.add('hidden');
+        }
+    }
 
     function setSearchWord(word) {
         currentSearchWord = word;
@@ -324,6 +328,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             button.classList.add('active');
                         }
                     });
+                    filterButton();
                     return;
                 }
             }
@@ -336,6 +341,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 button.classList.add('active');
             }
         });
+        filterButton();
     }
 
     function checkCacheExpiration(cachedTime) {
