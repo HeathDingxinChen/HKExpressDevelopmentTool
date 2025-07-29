@@ -229,7 +229,7 @@ export const sites = [{
 
 }, {
     id: 'githubadmin',
-    name: 'Admint Service',
+    name: 'Admin Service',
     icon: icons.github,
     category: 'server',
     repositoryName: 'hkexpress-admin-svc',
