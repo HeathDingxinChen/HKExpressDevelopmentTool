@@ -461,22 +461,32 @@ export const sites = [{
         name: 'search create payment by orderId',
         category: 'opensearch',
         showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body,structured.response_body,structured.traceId),isDirty:!t,sort:!()),',
-        queryParam: '&_q=(filters:!((\'$state\':(store:appState),meta:(alias:!n,disabled:!f,index:f4f12330-b079-11ef-ad74-6d49bebb7247,key:structured.request_url,negate:!f,params:(query:\'v1%2Fpayment%2Fcreate-payment\'),type:phrase),query:(match_phrase:(structured.request_url:\'v1%2Fpayment%2Fcreate-payment\')))),query:(language:kuery,query:\'$1\'))',
+        queryParam: 'key:structured.request_url,negate:!f,params:(query:\'v1%2Fpayment%2Fcreate-payment\'),type:phrase),query:(match_phrase:(structured.request_url:\'v1%2Fpayment%2Fcreate-payment\')))),query:(language:kuery,query:\'$1\'))',
         order: 1,
         searchAble: true,
-        usedFilter: false,
+        usedFilter: true,
         placeholder: 'please enter order Id'
     }, {
         id: 'searchpnrbyorderId',
         name: 'search PNR by orderId',
         category: 'opensearch',
         showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body,structured.response_body),isDirty:!t,sort:!()),',
-        queryParam: '&_q=(filters:!((\'$state\':(store:appState),meta:(alias:!n,disabled:!f,index:f4f12330-b079-11ef-ad74-6d49bebb7247,key:structured.request_url,negate:!f,params:(query:internal%2Fv1%2Fbooking),type:phrase),query:(match_phrase:(structured.request_url:internal%2Fv1%2Fbooking)))),query:(language:kuery,query:\'$1\'))',
+        queryParam: 'key:structured.request_url,negate:!f,params:(query:internal%2Fv1%2Fbooking),type:phrase),query:(match_phrase:(structured.request_url:internal%2Fv1%2Fbooking)))),query:(language:kuery,query:\'$1\'))',
         order: 1,
         searchAble: true,
-        usedFilter: false,
+        usedFilter: true,
         placeholder: 'please enter order Id'
     }, {
+        id: 'searchdatabasechangebytxnid',
+        name: 'search database change by txn id',
+        category: 'opensearch',
+        showColumn: '_a=(discover:(columns:!(kubernetes.container_name,structured.level,structured.message,structured.request_url,structured.request_body,structured.response_body,structured.traceId,structured.method,structured.input_parameter),isDirty:!t,sort:!()),',
+        queryParam: 'key:structured.input_parameter,negate:!f,params:(query:\'$1\'),type:phrase),query:(match_phrase:(structured.input_parameter:\'$1\')))),query:(language:kuery,query:\'\'))',
+        order: 1,
+        searchAble: true,
+        usedFilter: true,
+        placeholder: 'please enter txn Id'
+    },{
         id: 'searchjimupayment',
         name: 'search recent jimu api call',
         category: 'opensearch',
