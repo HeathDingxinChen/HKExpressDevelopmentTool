@@ -22,8 +22,10 @@ export const openSearchUrl = {
     indexPattern: {
         dev: '71d8fc80-2301-11ef-ae1c-751edb730112',
         uat: '1ddac3d0-29f4-11ef-8292-e1b84fc6127c',
-        nextdev: 'fb93de40-e377-11ef-9dde-157a1613bce2',
-        nextuat: '064376c0-e378-11ef-8062-87353e736baa',
+        nextdev: '71d8fc80-2301-11ef-ae1c-751edb730112',
+        nextuat: '1ddac3d0-29f4-11ef-8292-e1b84fc6127c',
+        // nextdev: 'fb93de40-e377-11ef-9dde-157a1613bce2',
+        // nextuat: '064376c0-e378-11ef-8062-87353e736baa',
         prod: 'f4f12330-b079-11ef-ad74-6d49bebb7247',
     },
     timeSelector: {
@@ -355,7 +357,7 @@ export const sites = [{
     name: 'Jira',
     icon: icons.jira,
     category: 'others',
-    url: icons.jira,
+    url: 'https://hkexpress-uo.atlassian.net/jira/software/projects/AD/boards/27/backlog?issueType=10153',
     order: 1,
     searchAble: false,
 
